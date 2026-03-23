@@ -4,14 +4,14 @@ Kho lưu trữ lời giải các bài tập lập trình thi đấu (Competitive
 
 ## 📂 Danh mục thư mục
 
-- [AtCoder](./atcoder-solutions)
-- [Codeforces](./codeforces-solutions)
-- [CSES](./cses-solutions)
-- [LQDOJ](./lqdoj-solutions)
-- [MarisaOJ](./marisaoj-solutions)
-- [SPOJ](./spoj-solutions)
-- [VNOJ](./vnoj-solutions)
-- [Yosupo](./yosupo-solutions)
+- [AtCoder](./atcoder)
+- [Codeforces](./codeforces)
+- [CSES](./cses)
+- [LQDOJ](./lqdoj)
+- [MarisaOJ](./marisaoj)
+- [SPOJ](./spoj)
+- [VNOJ](./vnoj)
+- [Yosupo](./yosupo)
 
 ---
 *Ngôn ngữ chính: C++*
