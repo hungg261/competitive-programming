@@ -1,0 +1,1 @@
+print((lambda a, b: round(a/b, 2))(*list(map(float, input().split()))))
