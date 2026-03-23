@@ -1,0 +1,13 @@
+*.exe
+*.o
+*.out
+*.app
+*.spec
+
+.vscode/
+.idea/
+.vs/
+*.layout
+*.depend
+
+*.txt
