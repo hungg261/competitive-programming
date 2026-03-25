@@ -15,12 +15,6 @@ struct Rect{
     }
 
     pair<int, int> use(){
-        if(n == 1 && m == 1){
-            --n; --m;
-            return {2, 1};
-        }
-
-
         pair<int, int> res = {1, n};
 
         --m;
@@ -30,7 +24,7 @@ struct Rect{
     }
 
     bool valid(){
-        return n > 0 && m > 0;
+        return n > 0 || m > 0;
     }
 
     bool operator < (const Rect& other) const{
@@ -42,6 +36,7 @@ struct Rect{
     }
 };
 
+const int INF = 1e9;
 void solve(){
     int n, k;
     cin >> n >> k;
@@ -51,38 +46,34 @@ void solve(){
         rects[i].input();
     }
 
-    priority_queue<Rect> pq;
-    for(int i = 1; i <= n; ++i)
-        pq.push(rects[i]);
+    vector<vector<int>> dp(n + 1, vector<int>(k + 1, INF));
+    dp[0][0] = 0;
+    for(int i = 1; i <= n; ++i){
+        dp[i] = dp[i - 1];
 
-    int res = 0;
-    while(k > 0){
-        if(pq.empty()) break;
+        Rect& cur = rects[i];
+        int gain = 0, area = 0;
 
-        Rect rect = pq.top();
-        pq.pop();
+        while(cur.valid()){
+            int C, S;
+            tie(C, S) = cur.use();
 
-        int C, S;
-        tie(C, S) = rect.use();
+            gain += C;
+            area += S;
 
-        cerr << C << " " << S << " ";
-        rect.output();
-
-        k -= C;
-        res += S;
-
-        if(rect.valid()) pq.push(rect);
+            for(int j = k; j >= gain; --j)
+                dp[i][j] = min(dp[i][j], dp[i - 1][j - gain] + area);
+        }
     }
 
-    if(k > 0) cout << "-1\n";
-    else cout << res << "\n";
+    cout << (dp[n][k] == INF ? -1 : dp[n][k]) << "\n";
 }
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
 
     int t = 1;
-//    cin >> t;
+    cin >> t;
 
     while(t--){
         solve();
