@@ -6,6 +6,8 @@ Time (YYYY-MM-DD-hh.mm.ss): 2026-03-26-13.40.43
 #include<bits/stdc++.h>
 using namespace std;
 
+#define int long long
+
 const int MAX = 2e5;
 void brute(){
     int n, y;
@@ -34,17 +36,20 @@ void brute(){
         return res;
     };
 
-    for(int x = 1; x <= MAX; ++x){
+    for(int x = 2; x <= 200; ++x){
         cerr << x << ": " << Try(x) << "\n";
     }
 }
 
 void solve(){
+    brute();
+    return;
+
     int n, y;
     cin >> n >> y;
 
     vector<int> c(n + 1);
-    int mx = INT_MIN;
+    int mx = -1e18;
     for(int i = 1; i <= n; ++i){
         cin >> c[i];
         mx = max(mx, c[i]);
@@ -68,11 +73,19 @@ void solve(){
         return res;
     };
 
-//    for(int x = 2; x <= mx + 1; ++x){
-//        cerr << Try(x) << "\n";
-//    }
+    int l = 2, r = MAX, res = -1e18;
+    while(l <= r){
+        int m1 = l + (r - l) / 3, m2 = r - (r - l) / 3;
+        int v1 = Try(m1), v2 = Try(m2);
 
+        cerr << l << " " << r << ": " << m1 << " " << m2 << " | " << v1 << " " << v2 << "\n";
 
+        res = max({res, v1, v2});
+        if(v1 < v2) l = m1 + 1;
+        else  r = m2 - 1;
+    }
+
+    cout << res << "\n";
 }
 
 signed main(){
