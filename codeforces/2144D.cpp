@@ -42,9 +42,6 @@ void brute(){
 }
 
 void solve(){
-    brute();
-    return;
-
     int n, y;
     cin >> n >> y;
 
@@ -55,44 +52,38 @@ void solve(){
         mx = max(mx, c[i]);
     }
 
-    vector<int> mp(MAX + 5);
-    auto Try = [&](int x){
-        fill(begin(mp) + 1, begin(mp) + mx + 1, 0);
-        for(int i = 1; i <= n; ++i){
-            ++mp[c[i]];
-        }
-
-        int res = 0;
-        for(int i = 1; i <= n; ++i){
-            int cur = (c[i] + x - 1) / x;
-            res += cur;
-
-            if(--mp[cur] < 0) res -= y;
-        }
-
-        return res;
-    };
-
-    int l = 2, r = MAX, res = -1e18;
-    while(l <= r){
-        int m1 = l + (r - l) / 3, m2 = r - (r - l) / 3;
-        int v1 = Try(m1), v2 = Try(m2);
-
-        cerr << l << " " << r << ": " << m1 << " " << m2 << " | " << v1 << " " << v2 << "\n";
-
-        res = max({res, v1, v2});
-        if(v1 < v2) l = m1 + 1;
-        else  r = m2 - 1;
+    if(mx == 1){
+        cout << n << "\n";
+        return;
     }
 
-    cout << res << "\n";
+    vector<int> pre(mx + 1, 0), mp(mx + 1, 0);
+    for(int i = 1; i <= n; ++i) pre[c[i]] = ++mp[c[i]];
+    for(int i = 1; i <= mx; ++i) pre[i] += pre[i - 1];
+
+    int ans = -1e18;
+    for(int x = 2; x <= mx; ++x){
+        int res = 0;
+        for(int j = 1; (j - 1) * x + 1 <= mx; ++j){
+            int L = (j - 1) * x + 1, R = min(mx, j * x);
+
+            int need = pre[R] - pre[L - 1];
+            int left = max(0LL, need - mp[j]);
+            res += j * need - left * y;
+
+        }
+
+        ans = max(ans, res);
+    }
+
+    cout << ans << "\n";
 }
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
 
     int t = 1;
-    //cin >> t;
+    cin >> t;
 
     while(t--){
         solve();
