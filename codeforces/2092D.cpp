@@ -102,7 +102,7 @@ void solve(){
             cur = cur->nxt;
             ++idx;
         }
-        found: NULL;
+        found:;
     }
 
     if(!(cnt[0] == cnt[1] && cnt[1] == cnt[2])) cout << "-1\n";
