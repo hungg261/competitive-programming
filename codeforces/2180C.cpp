@@ -10,26 +10,37 @@ void solve(){
     int n, k;
     cin >> n >> k;
 
-    if(k & 1){
-        for(int i = 1; i <= k; ++i) cout << n << " ";
-        cout << "\n";
+    vector<int> a(k, 0);
+    vector<int> tight, loose;
+    for(int i = 0; i < k; ++i) tight.push_back(i);
 
-        return;
-    }
-
-    int mask = 0;
     for(int b = 30; b >= 0; --b){
         if(n >> b & 1){
-            if(!mask) mask |= 1 << b;
+            if(k & 1) for(int& ele: a) ele |= 1 << b;
             else{
-                mask |= (1 << b) - 1;
-                break;
+                if(!tight.empty()){
+                    loose.push_back(tight.back());
+                    tight.pop_back();
+                }
+
+                for(int i = 0; i < k - 1; ++i){
+                    if(i < (int)tight.size()) a[tight[i]] |= 1 << b;
+                    else{
+                        for(int j = 0; i + j < k - 1; ++j){
+                            a[loose[j]] |= 1 << b;
+                        }
+                        break;
+                    }
+                }
             }
+        }
+        else{
+            if(loose.size() & 1) for(int i = 0; i + 1 < (int)loose.size(); ++i) a[loose[i]] |= 1 << b;
+            else for(int i = 0; i < (int)loose.size(); ++i) a[loose[i]] |= 1 << b;
         }
     }
 
-    cout << mask << " " << (n ^ mask) << " ";
-    for(int i = 1; i <= k - 2; ++i) cout << n << " ";
+    for(int ele: a) cout << ele << " ";
     cout << "\n";
 }
 
