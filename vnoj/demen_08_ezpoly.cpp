@@ -64,49 +64,6 @@ void solve(){
 
 namespace Sub2{
 
-//int nodes[MAXN * 4 + 5], lazy[MAXN * 4 + 5];
-//
-//void apply(int id, int l, int r, int lz){
-//    nodes[id] += (l + r) * (r - l + 1) / 2 * lz;
-//    lazy[id] += lz;
-//}
-//
-//void down(int id, int l, int r){
-//    int& lz = lazy[id];
-//    if(lz == 0) return;
-//
-//    int mid = (l + r) >> 1;
-//    apply(id << 1, l, mid, lz);
-//    apply(id << 1 | 1, mid + 1, r, lz);
-//
-//    lz = 0;
-//}
-//
-//void update(int id, int l, int r, int u, int v, int val){
-//    if(v < l || r < u) return;
-//    if(u <= l && r <= v){
-//        apply(id, l, r, val);
-//        return;
-//    }
-//
-//    down(id, l, r);
-//
-//    int mid = (l + r) >> 1;
-//    update(id << 1, l, mid, u, v, val);
-//    update(id << 1 | 1, mid + 1, r, u, v, val);
-//    nodes[id] = nodes[id << 1] + nodes[id << 1 | 1];
-//}
-//
-//int get(int id, int l, int r, int idx){
-//    if(r < idx || idx < l) return 0;
-//    if(l == r) return nodes[id];
-//
-//    down(id, l, r);
-//
-//    int mid = (l + r) >> 1;
-//    return get(id << 1, l, mid, idx) + get(id << 1, mid + 1, r, idx);
-//}
-
 void solve(){
     FenwickTree diff1(n + 1), diff2(n + 1);
     for(const auto& tp: queries){
@@ -162,7 +119,7 @@ void solve(){
         }
 
         int st = l % range;
-        int _l = (l + range - 1) / range, _r = r / range;
+        int _l = l / range, _r = r / range;
 
         if(_l > _r) continue;
 
@@ -171,8 +128,6 @@ void solve(){
 
         diff1[range][st][_r + 1] -= (_l - 1) * val;
         diff1[range][st][_l] += (_l - 1) * val;
-
-//        cerr << l << " " << r << " " << range << " | " << st << " " << _l << " " << _r << "\n";
     }
 
     for(int s = 1; s <= SQRT; ++s){
@@ -204,31 +159,16 @@ signed main(){
     bool is_sub1 = true, is_sub2 = true;
     for(int qr = 1; qr <= q; ++qr){
         int l, r, range, val;
-        cin >> l >> r >> range;
-        val = 1;
+        cin >> l >> r >> range >> val;
 
         queries.emplace_back(l, r, range, val);
         is_sub1 &= l == r;
         is_sub2 &= range == 1;
     }
 
-//    if(is_sub1) Sub1::solve();
-//    else if(is_sub2) Sub2::solve();
-
-    Sub3::solve();
+    if(is_sub1) Sub1::solve();
+    else if(is_sub2) Sub2::solve();
+    else Sub3::solve();
 
     return 0;
 }
-/*
-5 2
-1 3 1 1
-4 5 1 2
-
-5 4
-1 5 1 1
-1 5 2 3
-1 4 3 2
-2 5 3 4
-
-6 6 9 8 22
-*/
