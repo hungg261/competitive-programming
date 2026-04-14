@@ -1,109 +1,43 @@
 /******************************************************************************
 Link: https://cses.fi/problemset/task/1625
 Code: 1625
-Time (YYYY-MM-DD-hh.mm.ss): 2026-03-05-21.38.55
+Time (YYYY-MM-DD-hh.mm.ss): 2026-04-14-10.38.32
 *******************************************************************************/
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-const int dx[4] = {-1, 0, 1, 0}, dy[4] = {0, 1, 0, -1};
-const int N = 5, SX = 0, SY = 0, TARX = N - 1, TARY = 0;
-int len;
-string s;
+const int N = 7;
+bool visited[N][N];
+string p;
+int ans = 0;
 
-pair<int, int> coord(int idx){
-    return {idx / N, idx % N};
-}
-
-int idx(int x, int y){
-    return x * N + y;
-}
-
-bool bound(int x, int y){
-    return 0 <= x && x < N && 0 <= y && y < N;
-}
-
-int ins(char ch){
-    if(ch == 'U') return 0;
-    if(ch == 'R') return 1;
-    if(ch == 'D') return 2;
-    if(ch == 'L') return 3;
-    throw "ins failed";
-}
-
-char dir(int id){
-    return "URDL"[id];
-}
-
-char invdir(char ch){
-    if(ch == 'U') return 'D';
-    if(ch == 'R') return 'L';
-    if(ch == 'D') return 'U';
-    if(ch == 'L') return 'R';
-    throw "invdir failed";
-}
-
-int invdir(int d){
-    return ins(invdir(dir(d)));
-}
-
-bool mark[N][N];
-int res = 0;
-//string trace;
-void Try(int idx, int x, int y){
-//    cerr << idx << ' ' << x << ' ' << y << '\n';
-    if(idx >= len){
-        if(x == TARX && y == TARY){
-//            cout << trace << '\n';
-            ++res;
-        }
+void solve(int r, int c, int s) {
+    if (r == 6 && c == 0) {
+        if (s == 48) ans++;
         return;
     }
+    if (s == 48) return;
 
-    if(s[idx] != '?'){
-        int d = ins(s[idx]);
+    if ((r == 0 || r == 6 || (visited[r-1][c] && visited[r+1][c])) && c > 0 && c < 6 && !visited[r][c-1] && !visited[r][c+1]) return;
+    if ((c == 0 || c == 6 || (visited[r][c-1] && visited[r][c+1])) && r > 0 && r < 6 && !visited[r-1][c] && !visited[r+1][c]) return;
 
-        int nx = x + dx[d], ny = y + dy[d];
-        if(bound(nx, ny) && !mark[nx][ny]){
-            mark[nx][ny] = true;
-//            trace += dir(d);
+    visited[r][c] = true;
 
-            int nnx = nx + dx[d], nny = ny + dy[d];
-            if(!bound(nnx, nny) || mark[nnx][nny]){
+    if (r < 6 && !visited[r+1][c] && (p[s] == '?' || p[s] == 'D')) solve(r+1, c, s+1);
+    if (r > 0 && !visited[r-1][c] && (p[s] == '?' || p[s] == 'U')) solve(r-1, c, s+1);
+    if (c > 0 && !visited[r][c-1] && (p[s] == '?' || p[s] == 'L')) solve(r, c-1, s+1);
+    if (c < 6 && !visited[r][c+1] && (p[s] == '?' || p[s] == 'R')) solve(r, c+1, s+1);
 
-            }
-
-            Try(idx + 1, nx, ny);
-
-            mark[nx][ny] = false;
-//            trace.pop_back();
-        }
-    }
-    else for(int d = 0; d < 4; ++d){
-        int nx = x + dx[d], ny = y + dy[d];
-        if(!bound(nx, ny) || mark[nx][ny]) continue;
-
-
-        mark[nx][ny] = true;
-//        trace += dir(d);
-
-        Try(idx + 1, nx, ny);
-
-        mark[nx][ny] = false;
-//        trace.pop_back();
-    }
+    visited[r][c] = false;
 }
 
-signed main(){
-    ios_base::sync_with_stdio(0); cin.tie(0);
+int main() {
+    ios::sync_with_stdio(0); cin.tie(0);
+    cin >> p;
 
-    cin >> s;
-    len = s.size();
+    solve(0, 0, 0);
 
-    mark[0][0] = true;
-    Try(0, 0, 0);
-
-    cout << res << '\n';
+    cout << ans << endl;
 
     return 0;
 }
