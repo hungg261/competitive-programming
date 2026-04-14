@@ -14,6 +14,7 @@ struct FenwickTree{
     FenwickTree(int sz){ n = sz; BIT.resize(sz + 1, 0); }
 
     void update(int idx, int val){
+        ++idx;
         if(idx <= 0) return;
 
         for(int i = idx; i <= n; i += i & -i){
@@ -22,10 +23,12 @@ struct FenwickTree{
     }
 
     void assign(int idx, int val){
+        ++idx;
         update(idx, val - at(idx));
     }
 
     int get(int idx){
+        ++idx;
         if(idx <= 0) return 0;
 
         int res = 0;
@@ -79,7 +82,7 @@ void getDepths(int u, int prv, int depth, int k, vector<int>& depths){
 }
 
 long long res = 0;
-FenwickTree freq(MAXN + 1);
+FenwickTree freq(MAXN + 5);
 void decompose(int u, int prv){
     int subsz = findSubSz(u, -1);
     int centroid = findCentroid(u, -1, subsz);
