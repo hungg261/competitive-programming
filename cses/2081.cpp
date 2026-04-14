@@ -14,7 +14,6 @@ struct FenwickTree{
     FenwickTree(int sz){ n = sz; BIT.resize(sz + 1, 0); }
 
     void update(int idx, int val){
-        ++idx;
         if(idx <= 0) return;
 
         for(int i = idx; i <= n; i += i & -i){
@@ -23,12 +22,10 @@ struct FenwickTree{
     }
 
     void assign(int idx, int val){
-        ++idx;
         update(idx, val - at(idx));
     }
 
     int get(int idx){
-        ++idx;
         if(idx <= 0) return 0;
 
         int res = 0;
@@ -38,7 +35,7 @@ struct FenwickTree{
         return res;
     }
 
-    int get(int l, int r){ l = max(1, l); r = min(n, r); return get(r) - get(l - 1); }
+    int get(int l, int r){ return get(r) - get(l - 1); }
     int at(int i){ return get(i, i); }
 };
 
@@ -90,7 +87,7 @@ void decompose(int u, int prv){
     centroidPar[centroid] = prv;
     removed[centroid] = true;
 
-    freq.update(0, 1);
+    freq.update(0 + 1, 1);
     int maxDepth = 0;
     for(int v: adj[centroid]){
         if(removed[v]) continue;
@@ -99,16 +96,16 @@ void decompose(int u, int prv){
         getDepths(v, centroid, 1, k2, depths);
 
         for(int d: depths){
-            res += freq.get(k1 - d, k2 - d);
+            res += freq.get(max(0, k1 - d) + 1, k2 - d + 1);
         }
 
         for(int d: depths){
-            freq.update(d, 1);
+            freq.update(d + 1, 1);
             maxDepth = max(maxDepth, d);
         }
     }
     for(int d = 0; d <= maxDepth; ++d)
-        freq.assign(d, 0);
+        freq.assign(d + 1, 0);
 
     for(int v: adj[centroid]){
         if(removed[v]) continue;
