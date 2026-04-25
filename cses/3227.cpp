@@ -86,6 +86,7 @@ void compute(){
         sta.push_back(i);
     }
 
+    sta.clear();
     for(int i = n; i >= 1; --i){
         while(!sta.empty() && x[sta.back()] >= x[i]) sta.pop_back();
 
@@ -109,10 +110,6 @@ signed main(){
         LCT.add_segment(INT_MIN, S1, Line(x[i], -x[i] * L[i]));
         LCT.add_segment(S2, INT_MAX, Line(-x[i], x[i] * (R[i] + k - 1)));
         LCT.add_segment(S1, S2, Line(0, x[i] * min(k, R[i] - L[i] - 1)));
-
-        cerr << i << ". [" << "-inf" << ", " << S1 << "]: " << Line(x[i], -x[i] * L[i]) << endl;
-        cerr << i << ". [" << S2 << ", " << "inf" << "]: " << Line(-x[i], x[i] * (R[i] + k - 1)) << endl;
-        cerr << i << ". [" << S1 << ", " << S2 << "]: " << Line(0, x[i] * min(k, R[i] - L[i] - 1)) << endl;
     }
 
     for(int i = k; i <= n; ++i){
