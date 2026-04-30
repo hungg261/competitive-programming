@@ -13,22 +13,25 @@ signed main(){
     cin >> n;
 
     const int MAX = 4e6, MAXLG = __lg(MAX) + 1;
-    vector<int> dp(1 << MAXLG, -1);
-
+    const int SIZE = 1 << MAXLG;
+    vector<int> a(n), dp(SIZE, -1);
     for(int i = 0; i < n; ++i){
-        int cur; cin >> cur;
-        dp[~cur & ((1 << MAXLG) - 1)] = cur;
+        cin >> a[i];
+        dp[a[i]] = a[i];
     }
 
-    for(int i = 0; i <= MAXLG; ++i){
-        for(int mask = 1; mask <= MAX; ++mask){
+    for(int mask = 0; mask < SIZE; ++mask){
+        for(int i = 0; i < MAXLG; ++i){
             if(mask >> i & 1){
                 dp[mask] = max(dp[mask], dp[mask ^ (1 << i)]);
             }
         }
     }
 
-    cout << dp[36] << '\n';
+    for(int i = 0; i < n; ++i){
+        cout << dp[a[i] ^ (SIZE - 1)] << " ";
+    }
+    cout << "\n";
 
     return 0;
 }
