@@ -59,8 +59,8 @@ void solve(){
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
-    freopen("sodep.INP","r",stdin);
-    freopen("sodep.OUT","w",stdout);
+    freopen("SODEP.INP","r",stdin);
+    freopen("SODEP.OUT","w",stdout);
 
     int t;
     cin >> t;
