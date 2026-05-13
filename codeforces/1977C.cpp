@@ -18,27 +18,48 @@ void solve(){
     for(int i = 1; i <= n; ++i){
         cin >> a[i];
     }
+
     sort(begin(a) + 1, end(a));
 
-    vector<int> d(n + 1);
+    int l = 1;
     for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= i; ++j){
-            if(a[i] % a[j] == 0) ++d[i];
+        if((l = l * a[i] / __gcd(l, a[i])) > a[n]){
+            cout << n << "\n";
+            return;
         }
     }
 
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j < i; ++j){
-            if()
+    auto check = [&](int lcm) -> int {
+        if(binary_search(begin(a) + 1, end(a), lcm)) return -1;
+
+        int curlcm = 1;
+        int len = 0;
+        for(int i = 1; i <= n; ++i){
+            if(lcm % a[i] == 0){
+                curlcm = curlcm * a[i] / __gcd(curlcm, a[i]);
+                ++len;
+            }
+        }
+
+        return curlcm == lcm ? len : -1;
+    };
+
+    int ans = 0;
+    for(int d = 1; d * d <= a[n]; ++d){
+        if(a[n] % d == 0){
+            ans = max(ans, check(d));
+            ans = max(ans, check(a[n] / d));
         }
     }
+
+    cout << ans << "\n";
 }
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
 
     int t = 1;
-    //cin >> t;
+    cin >> t;
 
     while(t--){
         solve();
