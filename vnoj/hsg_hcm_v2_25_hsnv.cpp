@@ -13,7 +13,7 @@ vector<int> adj[MAXN + 5];
 pair<int, int> table[MAXN * 2 + 5][MAXLG + 5];
 int tin[MAXN + 5], Timer;
 int h[MAXN + 5], lg[MAXN * 2 + 5];
-long long hsnv[MAXM * 4 + 5];
+long long hsnv[MAXM + 5];
 
 void dfs(int u, int prv){
     tin[u] = ++Timer;
@@ -89,93 +89,117 @@ void solve(){
 
 namespace Subtask3{
 
-vector<pair<int, int>> nodes[MAXM * 4 + 5];
-vector<pair<int, int>> history[MAXN + 5];
-int inc[MAXN + 5];
+long long delta[MAXN + 5];
 
-void push(int id){
-    for(const pair<int, int>& Data: nodes[id]){
-        int time, pos; tie(time, pos) = Data;
-        const vector<pair<int, int>>& his = history[pos];
+struct FenwickTree{
+    int n;
+    vector<long long> BIT;
 
-        int latest = upper_bound(begin(his), end(his), make_pair(time, -1)) - begin(his) - 1;
-        for(int& it = inc[pos]; it <= latest; ++it){
-            hsnv[id] += his[it].second;
+    FenwickTree() = default;
+    FenwickTree(int sz){ n = sz; BIT.resize(sz + 1, 0); }
+
+    void update(int idx, long long val){
+        if(idx <= 0) return;
+
+        for(int i = idx; i <= n; i += i & -i){
+            BIT[i] += val;
         }
-
-        hsnv[id << 1] += hsnv[id];
-        nodes[id << 1].push_back(Data);
-
-        hsnv[id << 1 | 1] += hsnv[id];
-        nodes[id << 1 | 1].push_back(Data);
     }
 
-    hsnv[id] = 0;
-    nodes[id].clear();
+    void add(int l, int r, long long val){
+        update(l, val);
+        if(r + 1 <= n) update(r + 1, -val);
+    }
+
+    long long get(int idx){
+        if(idx <= 0) return 0;
+
+        long long res = 0;
+        for(int i = idx; i > 0; i -= i & -i){
+            res += BIT[i];
+        }
+        return res;
+    }
+
+    long long get(int l, int r){ return get(r) - get(l - 1); }
+};
+
+struct Node{
+    int l, r;
+    int room;
+    long long base;
+
+    bool operator < (const Node& other) const {
+        return l < other.l;
+    }
+};
+
+set<Node> S;
+FenwickTree fwt;
+
+set<Node>::iterator split(int pos){
+    auto it = S.lower_bound({pos, -1, -1, -1});
+    if(it != S.end() && pos == it->l) return it;
+
+    --it;
+    if(it->r < pos) return S.end();
+
+    int l = it->l, r = it->r,
+        room = it->room;
+    long long base = it->base;
+
+    S.erase(it);
+    S.insert({l, pos - 1, room, base});
+    return S.insert({pos, r, room, base}).first;
 }
 
-void add(int id, int l, int r, int u, int v, const pair<int, int>& Data){
-    if(v < l || r < u) return;
-    if(u <= l && r <= v){
-        nodes[id].push_back(Data);
-        return;
+void assign(int l, int r, int Z){
+    auto itR = split(r + 1);
+    auto itL = split(l);
+
+    for(auto it = itL; it != itR; ++it){
+        fwt.add(it->l, it->r, (delta[it->room] - it->base) - find_dist(it->room, Z));
     }
 
-    push(id);
-
-    int mid = (l + r) >> 1;
-    add(id << 1, l, mid, u, v, Data);
-    add(id << 1 | 1, mid + 1, r, u, v, Data);
+    S.erase(itL, itR);
+    S.insert({l, r, Z, delta[Z]});
 }
 
-int query(int id, int l, int r, int idx){
-    if(l == r){
-        int hs = 0;
-        for(const pair<int, int>& Data: nodes[id]){
-            hs -= find_dist(a[idx], Data.second);
-            a[idx] = Data.second;
-        }
-        hsnv[id] = 0;
+set<Node>::iterator find(int pos){
+    auto it = prev(S.upper_bound({pos, -1, -1, -1}));
+    return it;
+}
 
-        return hs;
-    }
-
-    push(id);
-
-    int mid = (l + r) >> 1;
-    if(idx <= mid) return query(id << 1, l, mid, idx);
-    else return query(id << 1 | 1, mid + 1, r, idx);
+long long query(int K){
+    auto it = find(K);
+    return fwt.get(K) + delta[it->room] - it->base;
 }
 
 void solve(){
     for(int i = 1; i <= M; ++i){
-        history[a[i]].emplace_back(0, 0);
+        S.insert({i, i, a[i], delta[a[i]]});
     }
+    fwt = FenwickTree(M + 1);
 
-    for(int t = 1; t <= Q; ++t){
+    while(Q--){
         char type; cin >> type;
 
         if(type == 'e'){
             int X, V; cin >> X >> V;
 
-            history[X].emplace_back(t, V);
+            delta[X] += V;
         }
         else if(type == 't'){
             int L, R, Z;
             cin >> L >> R >> Z;
 
-//            for(int nv = L; nv <= R; ++nv){
-//                hsnv[nv] -= find_dist(a[nv], Z);
-//                a[nv] = Z;
-//            }
-
-            add(1, 1, M, L, R, {t, Z});
+            assign(L, R, Z);
         }
         else if(type == 'q'){
             int K;
             cin >> K;
 
-            cout << query(1, 1, M, K) << "\n";
+            cout << query(K) << "\n";
         }
     }
 }
@@ -184,8 +208,8 @@ void solve(){
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
-//    freopen("HSNV.INP","r",stdin);
-//    freopen("HSNV.OUT","w",stdout);
+    freopen("HSNV.INP","r",stdin);
+    freopen("HSNV.OUT","w",stdout);
 
     cin >> N >> M >> Q;
     for(int i = 1; i <= M; ++i){
@@ -202,7 +226,8 @@ signed main(){
     dfs(1, -1);
     compute();
 
-    Subtask3::solve();
+    if(N <= 20000 && M <= 20000 && Q <= 20000) Subtask12::solve();
+    else Subtask3::solve();
 
     return 0;
 }
