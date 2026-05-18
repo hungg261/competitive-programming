@@ -12,6 +12,7 @@ Kho lưu trữ lời giải các bài tập lập trình thi đấu (Competitive
 - [SPOJ](./spoj)
 - [VNOJ](./vnoj)
 - [Yosupo](./yosupo)
+- [oj.uz](./ojuz)
 
 ---
 *Ngôn ngữ chính: C++*
