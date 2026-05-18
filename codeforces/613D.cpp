@@ -74,19 +74,32 @@ using namespace LCA;
 
 namespace Subsolve{
 
+const int INF = INT_MAX / 2;
 vector<int> subgraph[MAXN + 5];
 bool important[MAXN + 5];
 
-int dfs(int u, int prv){
-    int res = 0;
+pair<int, bool> dfs(int u, int prv){
+    int res = 0; bool connected = important[u];
+    int important_cnt = 0;
     for(int v: subgraph[u]){
         if(v == prv) continue;
-        res += dfs(v, u);
-        if(important[u] && important[v]) ++res;
+
+        pair<int, bool> child = dfs(v, u);
+        res += child.first;
+        if(important[u]){
+            if(child.second) ++res;
+        }
+        else{
+            if(child.second) ++important_cnt;
+        }
     }
 
-    if(!important[u]) ++res;
-    return res;
+    if(!important[u]){
+        if(important_cnt > 1) ++res, connected = false;
+        else if(important_cnt == 0) connected = false;
+        else connected = true;
+    }
+    return {res, connected};
 }
 
 }
@@ -131,7 +144,7 @@ void solve(){
         sta.push_back(arr[i]);
     }
 
-    cout << Subsolve::dfs(arr[0], -1) << "\n";
+    cout << Subsolve::dfs(arr[0], -1).first << "\n";
 
     failed:;
     for(int ele: arr){
