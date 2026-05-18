@@ -77,17 +77,15 @@ namespace Subsolve{
 vector<int> subgraph[MAXN + 5];
 bool important[MAXN + 5];
 
-int Try(int u, int prv){
+int dfs(int u, int prv){
     int res = 0;
-    if(!important[u]) ++res;
-
     for(int v: subgraph[u]){
         if(v == prv) continue;
-
+        res += dfs(v, u);
         if(important[u] && important[v]) ++res;
-        res += Try(v, u);
     }
 
+    if(!important[u]) ++res;
     return res;
 }
 
@@ -124,7 +122,7 @@ void solve(){
         int u = sta.back(), v = arr[i];
         if(important[u] && important[v] && find_dist(u, v) == 1){
             cout << "-1\n";
-            return;
+            goto failed;
         }
 
 
@@ -133,6 +131,9 @@ void solve(){
         sta.push_back(arr[i]);
     }
 
+    cout << Subsolve::dfs(arr[0], -1) << "\n";
+
+    failed:;
     for(int ele: arr){
         subgraph[ele].clear();
         important[ele] = false;
@@ -162,8 +163,6 @@ signed main(){
     while(q--){
         solve();
     }
-
-//    cout << Try(1, -1) << '\n';
 
     return 0;
 }
