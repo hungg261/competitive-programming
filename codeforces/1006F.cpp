@@ -8,9 +8,37 @@ using namespace std;
 
 const int MAX = 20;
 long long a[MAX + 5][MAX + 5], k;
-int n, m;
+int n, m, half;
+long long res = 0;
 
-map<long long, int> dp[MAX + 5][MAX + 5];
+map<long long, int> dp[MAX + 1][MAX + 1];
+
+void dfs1(int i, int j, int steps, long long cur){
+    if(i > n || j > m) return;
+
+    cur ^= a[i][j];
+
+    if(steps == half){
+        dp[i][j][cur]++;
+        return;
+    }
+
+    dfs1(i + 1, j, steps + 1, cur);
+    dfs1(i, j + 1, steps + 1, cur);
+}
+
+void dfs2(int i, int j, int steps, long long cur){
+    if(i <= 0 || j <= 0) return;
+
+    if(steps == (n + m - 2) - half){
+        if(dp[i][j].count(k ^ cur)) res += dp[i][j][k ^ cur];
+        return;
+    }
+
+    cur ^= a[i][j];
+    dfs2(i - 1, j, steps + 1, cur);
+    dfs2(i, j - 1, steps + 1, cur);
+}
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
@@ -22,44 +50,9 @@ signed main(){
         }
     }
 
-    if(n == 1 && m == 1){
-        cout << (a[1][1] == k ? 1 : 0) << "\n";
-        return 0;
-    }
-
-    int len = min(n, m);
-
-    dp[1][1][a[1][1]]++;
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= m; ++j){
-            if(i + j - 1 < len){
-                for(auto [x, _]: dp[i][j]) dp[i + 1][j][x ^ a[i + 1][j]]++;
-                for(auto [x, _]: dp[i][j]) dp[i][j + 1][x ^ a[i][j + 1]]++;
-            }
-        }
-    }
-
-    dp[n][m][a[n][m]]++;
-    for(int i = n; i >= 1; --i){
-        for(int j = m; j >= 1; --j){
-            if(i + j - 1 > len + 1){
-                for(auto [x, _]: dp[i][j]) dp[i - 1][j][x ^ a[i - 1][j]]++;
-                for(auto [x, _]: dp[i][j]) dp[i][j - 1][x ^ a[i][j - 1]]++;
-            }
-        }
-    }
-
-    long long res = 0;
-    for(int i = 1; i <= n; ++i){
-        for(int j = 1; j <= m; ++j){
-            if(i + j - 1 == len){
-                for(auto [x, cnt]: dp[i][j]){
-                    res += 1LL * dp[i + 1][j][k ^ x] * cnt;
-                    res += 1LL * dp[i][j + 1][k ^ x] * cnt;
-                }
-            }
-        }
-    }
+    half = (n + m - 2) / 2;
+    dfs1(1, 1, 0, 0);
+    dfs2(n, m, 0, 0);
 
     cout << res << "\n";
 
