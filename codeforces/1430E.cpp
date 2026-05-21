@@ -25,15 +25,11 @@ void trau(){
             while(closet_i < j && s[closet_i] != original[j]) ++closet_i;
             while(closet_j > i && s[closet_j] != original[i]) --closet_j;
 
-//            cerr << closet_i << " " << closet_j << endl;
-
             for(int x = closet_i; x > i; --x) op(x - 1);
 
             if(closet_i > closet_j) ++closet_j;
             for(int x = closet_j; x < j; ++x) op(x);
         }
-
-//        cerr << s << "\n";
 
         ++i; --j;
     }
