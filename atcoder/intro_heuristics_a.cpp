@@ -30,7 +30,6 @@ void greedy(){
     }
 }
 
-// hill climbing
 int compute_score(){
     int score = 0;
     for(int j = 1; j <= 26; ++j) last[j] = 0;
@@ -48,22 +47,39 @@ int compute_score(){
 
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
-void hill_climbing(){
+void SA(){
     greedy();
     int curBest = compute_score();
 
-    while(1.0 * clock() / CLOCKS_PER_SEC < 1.867){
+    const double Time = 1.867;
+    double cur_time = 0;
+    while((cur_time = 1.0 * clock() / CLOCKS_PER_SEC) < Time){
         int d = rng() % D + 1;
         int old_t = ans[d];
         int new_t;
-        do{ new_t = rng() % 26 + 1; } while(new_t == old_t);
+        bool swapped = false;
+        if(d < D && rng() % 100 < 20){
+            old_t = rng() % D + 1; new_t = rng() % D + 1;
+            swap(ans[old_t], ans[new_t]);
+            swapped = true;
+        }
+        else{
+            do{ new_t = rng() % 26 + 1; } while(new_t == old_t);
 
-        ans[d] = new_t;
+            ans[d] = new_t;
+        }
+
         int newScore = compute_score();
 
-        if(newScore >= curBest)
+        int delta = newScore - curBest;
+        double T = 3000.0 * (1.0 - cur_time / Time);
+
+        if(delta >= 0 || uniform_real_distribution<double>(0, 1)(rng) < exp(1.0 * delta / T))
             curBest = newScore;
-        else ans[d] = old_t;
+        else{
+            if(swapped) swap(ans[old_t], ans[new_t]);
+            else ans[d] = old_t;
+        }
     }
 
     for(int i = 1; i <= D; ++i){
@@ -82,7 +98,7 @@ signed main(){
         }
     }
 
-    hill_climbing();
+    SA();
 
     return 0;
 }
