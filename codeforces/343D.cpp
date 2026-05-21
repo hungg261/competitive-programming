@@ -6,26 +6,6 @@ Time (YYYY-MM-DD-hh.mm.ss): 2026-05-21-11.02.50
 #include<bits/stdc++.h>
 using namespace std;
 
-#ifdef _WIN32
-#define GETCHAR _getchar_nolock
-#else
-#define GETCHAR getchar_unlocked
-#endif
-
-inline int readInt() {
-    int x = 0;
-    char ch = GETCHAR();
-    while (ch < '0' || ch > '9') {
-        if (ch == EOF) return -1;
-        ch = GETCHAR();
-    }
-    while (ch >= '0' && ch <= '9') {
-        x = (x << 3) + (x << 1) + (ch - '0');
-        ch = GETCHAR();
-    }
-    return x;
-}
-
 const int MAXN = 5e5;
 int n, q;
 vector<int> adj[MAXN + 5];
@@ -39,6 +19,7 @@ void dfs(int u, int prv){
         par[v] = u;
 
         dfs(v, u);
+        sz[u] += sz[v];
     }
 }
 
@@ -126,10 +107,11 @@ void update_path(int u, int v, int val){
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
 
+
     cin >> n;
     for(int i = 1; i < n; ++i){
-        int a = readInt();
-        int b = readInt();
+        int a, b;
+        cin >> a >> b;
 
         adj[a].push_back(b);
         adj[b].push_back(a);
