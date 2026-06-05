@@ -10,39 +10,56 @@ void solve(){
     long long target; int n;
     cin >> target >> n;
 
+    long long sum = 0;
     multiset<int> ms;
     for(int i = 1; i <= n; ++i){
         int cur; cin >> cur;
+        sum += cur;
         ms.insert(cur);
     }
 
+    if(sum < target){
+        cout << "-1\n";
+        return;
+    }
+
     int res = 0;
-    while(true){
-        if(target == 0) break;
+    for(long long b = 1; b <= target; b <<= 1){
+        if((target & b) == b){
+            auto lb = ms.upper_bound(b);
+            long long cursum = 0;
+            for(auto it = ms.begin(); it != lb; ++it){
+                cursum += *it;
+                if(cursum >= b) break;
+            }
 
-        auto it = ms.upper_bound(target);
-        if(it != ms.begin()){
-            --it;
+            if(cursum < b){
+                auto it = ms.lower_bound(b);
+                int value = *it;
 
-            target -= *it;
+                while(value > b){
+                    ms.insert(value >>= 1);
+                    ++res;
+                }
+
+                ms.erase(it);
+            }
+            else{
+                for(auto it = prev(lb); ; --it){
+                    target -= *it;
+                }
+            }
         }
-        else if(*it > 1){
-            ms.insert(*it / 2);
-            ms.insert(*it / 2);
-            ++res;
-        }
-        else{
-            cout << "-1\n";
-            return;
-        }
-
-        ms.erase(it);
-
-        cerr << target << ": "; for(int x: ms) cerr << x << " "; cerr << endl; system("pause");
     }
 
     cout << res << "\n";
 }
+
+/*
+1
+183 8
+1 8 32 4 32 1 64 64
+*/
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
