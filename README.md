@@ -4,16 +4,15 @@ Kho lưu trữ lời giải các bài tập lập trình thi đấu (Competitive
 
 ## 📂 Danh mục thư mục
 
-- [AtCoder](./atcoder)
-- [Codeforces](./codeforces)
-- [CSES](./cses)
-- [LQDOJ](./lqdoj)
-- [MarisaOJ](./marisaoj)
-- [SPOJ](./spoj)
-- [VNOJ](./vnoj)
-- [Yosupo](./yosupo)
-- [oj.uz](./ojuz)
+- [AtCoder](./oj/atcoder)
+- [Codeforces](./oj/codeforces)
+- [CSES](./oj/cses)
+- [LQDOJ](./oj/lqdoj)
+- [MarisaOJ](./oj/marisaoj)
+- [SPOJ](./oj/spoj)
+- [VNOJ](./oj/vnoj)
+- [Yosupo](./oj/yosupo)
+- [oj.uz](./oj/ojuz)
 
 ---
 *Ngôn ngữ chính: C++*
-
