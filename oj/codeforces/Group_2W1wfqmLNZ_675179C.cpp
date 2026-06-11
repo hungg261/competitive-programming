@@ -6,6 +6,11 @@ Time (YYYY-MM-DD-hh.mm.ss): 2026-03-13-14.08.24
 #include<bits/stdc++.h>
 using namespace std;
 
+int A, B, N, M;
+vector<int> Xs, Ys;
+
+namespace Brute{
+
 struct DSU{
     int n;
     vector<int> par, sz;
@@ -61,22 +66,16 @@ struct Edge{
 
 const int dx[2] = {0, 1}, dy[2] = {1, 0};
 
-int A, B, N, M;
-vector<int> Xs, Ys;
-
-int e(int i, int j){ return (M + 1) * i + j; } // encode
+int e(int i, int j){ return (M + 1) * i + j; }
 pair<int, int> decode(int id){ return {id / (M + 1), id % (M + 1)}; }
 
-// vet can
-void trau(){
+void solve(){
     vector<Edge> edges;
     for(int i = 0; i + 1 < N + 2; ++i){
         int vx = Xs[i + 1] - Xs[i];
 
         for(int j = 0; j + 1 < M + 2; ++j){
             int vy = Ys[j + 1] - Ys[j];
-
-//            cerr << i << ' ' << j << ' ' << e(i, j) << ": " << vx << ' ' << vy << '\n';
 
             for(int d = 0; d < 1; ++d){
                 int nx = i + dx[d], ny = j + dy[d];
@@ -92,14 +91,6 @@ void trau(){
             }
         }
     }
-
-//    for(auto e: edges){
-//        int x1, y1, x2, y2;
-//        tie(x1, y1) = decode(e.u);
-//        tie(x2, y2) = decode(e.v);
-//
-//        cerr << x1 << ' ' << y1 << " <-> " << x2 << ' ' << y2 << ": " << e.w << '\n';
-//    }
 
     auto kruskal = [&](){
         sort(begin(edges), end(edges));
@@ -119,9 +110,13 @@ void trau(){
     cout << kruskal() << '\n';
 }
 
+}
+
+namespace Solve{
+
 void solve(){
-    vector<int> a;
-    vector<int> b;
+    vector<long long> a;
+    vector<long long> b;
 
     for(int i = 0; i + 1 < N + 2; ++i) a.push_back(Xs[i + 1] - Xs[i]);
     for(int j = 0; j + 1 < M + 2; ++j) b.push_back(Ys[j + 1] - Ys[j]);
@@ -134,26 +129,41 @@ void solve(){
     long long res = 0;
     while(i < n && j < m){
         if(a[i] < b[j]){
-            if(j == 0) res += a[i] * (M - j);
-            else res += a[i];
+            if(i == 0) res += a[i] * M;
+            else res += 1LL * a[i] * min(M, M - j + 1);
+
             ++i;
         }
         else{
-            if(i == 0) res += b[j] * (N - i);
-            else res += b[j];
+            if(j == 0) res += b[j] * N;
+            else res += 1LL * b[j] * min(N, N - i + 1);
+
             ++j;
         }
+    }
 
-        cerr << i << ' ' << j << ": " << res << '\n';
+    while(i < n){
+        if(i == 0) res += a[i] * M;
+        else res += 1LL * a[i] * min(M, M - j + 1);
+
+        ++i;
+    }
+    while(j < m){
+        if(j == 0) res += b[j] * N;
+        else res += b[j] * min(N, N - i + 1);
+
+        ++j;
     }
 
     cout << res << '\n';
 }
 
+}
+
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
-//    freopen("RUTVAN.INP","r",stdin);
-//    freopen("RUTVAN.OUT","w",stdout);
+    freopen("RUTVAN.INP","r",stdin);
+    freopen("RUTVAN.OUT","w",stdout);
 
     cin >> A >> B >> N >> M;
     Xs.resize(N); Ys.resize(M);
@@ -170,8 +180,7 @@ signed main(){
     sort(begin(Xs), end(Xs));
     sort(begin(Ys), end(Ys));
 
-//    trau();
-    solve();
+    Solve::solve();
 
     return 0;
 }
