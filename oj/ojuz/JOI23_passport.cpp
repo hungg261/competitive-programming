@@ -6,8 +6,6 @@ Time (YYYY-MM-DD-hh.mm.ss): 2026-07-02-14.18.54
 #include<bits/stdc++.h>
 using namespace std;
 
-#define cerr if(0)cerr
-
 const int MAXN = 2e5;
 int n;
 vector<int> adj[MAXN * 4 + 5];
@@ -16,7 +14,6 @@ int ids[MAXN + 5];
 void build(int id, int l, int r){
     if(l == r){
         ids[l] = id;
-        cerr << "f: " << id << ": " << l << endl;
         return;
     }
 
@@ -32,7 +29,6 @@ void add(int id, int l, int r, int u, int v, int t){
     if(v < l || r < u) return;
     if(u <= l && r <= v){
         adj[id].push_back(ids[t]);
-        cerr << "added: " << id << " " << ids[t] << " | " << u << " " << v << " " << t << endl;
         return;
     }
 
@@ -94,11 +90,6 @@ void solve(){
             }
         }
     }
-
-        cerr << ids[n] << "waat\n";
-    for(int u = 1; u <= 13; ++u){
-        cerr << u << ": " << dp[u] << " " << dist[0][u] << " " << dist[1][u] << endl;
-    }
 }
 
 signed main(){
@@ -111,11 +102,6 @@ signed main(){
         cin >> l >> r;
 
         add(1, 1, n, l, r, u);
-    }
-
-    for(int u = 1; u <= n * 4; ++u){
-        for(int v: adj[u])
-        cerr << "\t" << u << " " << v << endl;
     }
 
     solve();
