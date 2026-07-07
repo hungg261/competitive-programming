@@ -89,7 +89,7 @@ namespace Segtree_LCA{
 int nodes[MAXM * 4 + 5];
 void build(int id = 1, int l = 1, int r = m){
     if(l == r){
-        nodes[id] = l;
+        nodes[id] = C[l];
         return;
     }
 
@@ -111,64 +111,53 @@ int get(int u, int v, int id = 1, int l = 1, int r = m){
 
 namespace Segtree_HLD{
 
+int BIT[MAXM + 5];
+
+void update_cnt(int val, int delta){
+    ++val;
+    for(int i = val; i <= m + 1; i += i & -i) BIT[i] += delta;
+}
+
+int query_cnt(int val){
+    ++val;
+
+    int sum = 0;
+    for(int i = val; i > 0; i -= i & -i) sum += BIT[i];
+    return sum;
+}
+
+int get_total_count(int min_v, int max_v){
+    if(min_v > max_v) return 0;
+    return query_cnt(max_v) - query_cnt(min_v - 1);
+}
+
 struct Node{
-    int mx = -1, cnt = 0, lz = -1;
+    int l, r;
+    mutable int v;
+    bool operator<(const Node& o) const{ return l < o.l; }
+};
+set<Node> odt;
 
-    Node operator + (const Node& other) const {
-        Node res;
-        if(this->mx > other.mx) res.cnt = this->cnt;
-        else if(this->mx < other.mx) res.cnt = other.cnt;
-        else res.cnt = this->cnt + other.cnt;
-
-        res.mx = max(this->mx, other.mx);
-        res.lz = -1;
-        return res;
-    }
-
-    void debug(){ cerr << mx << " " << cnt << " " << lz << "\n"; }
-} nodes[MAXN * 4 + 5];
-
-void apply(int id, int l, int r, int lz){
-    if(lz >= nodes[id].mx){
-        nodes[id].mx = lz;
-        nodes[id].cnt = r - l + 1;
-        nodes[id].lz = lz;
-    }
+auto split(int pos){
+    auto it = odt.lower_bound({pos, 0, 0});
+    if(it != odt.end() && it->l == pos) return it;
+    --it;
+    if(it->r < pos) return odt.end();
+    int l = it->l, r = it->r, v = it->v;
+    odt.erase(it);
+    odt.insert({l, pos - 1, v});
+    return odt.insert({pos, r, v}).first;
 }
 
-void down(int id, int l, int r){
-    if(nodes[id].lz == -1) return;
-
-    int mid = (l + r) >> 1;
-    apply(id << 1, l, mid, nodes[id].lz);
-    apply(id << 1 | 1, mid + 1, r, nodes[id].lz);
-
-    nodes[id].lz = -1;
-}
-
-void update(int u, int v, int val, int id = 1, int l = 1, int r = n){
-    if(v < l || r < u) return;
-    if(u <= l && r <= v){
-        apply(id, l, r, val);
-        return;
+void assign_set(int L, int R, int val){
+    auto itr = split(R + 1);
+    auto itl = split(L);
+    for(auto it = itl; it != itr; ++it){
+        update_cnt(it->v, -(it->r - it->l + 1));
     }
-
-    down(id, l, r);
-
-    int mid = (l + r) >> 1;
-    update(u, v, val, id << 1, l, mid);
-    update(u, v, val, id << 1 | 1, mid + 1, r);
-    nodes[id] = nodes[id << 1] + nodes[id << 1 | 1];
-}
-
-Node get(int u, int v, int id = 1, int l = 1, int r = n){
-    if(v < l || r < u) return Node{};
-    if(u <= l && r <= v) return nodes[id];
-
-    down(id, l, r);
-
-    int mid = (l + r) >> 1;
-    return get(u, v, id << 1, l, mid) + get(u, v, id << 1 | 1, mid + 1, r);
+    odt.erase(itl, itr);
+    odt.insert({L, R, val});
+    update_cnt(val, R - L + 1);
 }
 
 
@@ -195,33 +184,58 @@ void HLD(int u = 1, int h = 1, int prv = -1){
 void update(int u, int val){
     int v = 1;
     while(head[u] != head[v]){
-        if(h[head[u]] > h[head[v]]){
-            update(Pos[head[u]], Pos[u], val);
-            u = par[head[u]];
-        }
-        else{
-            update(Pos[head[v]], Pos[v], val);
-            v = par[head[v]];
-        }
+        assign_set(Pos[head[u]], Pos[u], val);
+        u = par[head[u]];
     }
-    if(h[u] > h[v]) swap(u, v);
-
-    update(Pos[u], Pos[v], val);
+    assign_set(Pos[v], Pos[u], val);
 }
 
-void get(){
+int get(int l, int r){
+    return get_total_count(l, r);
+}
+
+void init(){
+    HLD();
+    odt.insert({1, n, 0});
+    update_cnt(0, n);
+}
 
 }
 
+vector<pair<int, int>> queries[MAXQ + 5];
+int pre[MAXN + 5];
 
+void build_pre(int u = 1, int prv = -1){
+    pre[u] = pre[prv] + 1;
+    for(int v: adj[u]){
+        if(v == prv) continue;
+        build_pre(v, u);
+    }
 }
 
 void solve(){
     Segtree_LCA::build();
-    Segtree_HLD::HLD();
+    Segtree_HLD::init();
+    build_pre();
 
-    Segtree_HLD::update(5, 3);
+    for(int i = 0; i < q; ++i){
+        int l, r;
+        cin >> l >> r;
 
+        queries[r].emplace_back(l, i);
+    }
+
+    vector<int> res(q);
+    for(int r = 1; r <= m; ++r){
+        Segtree_HLD::update(C[r], r);
+        for(const pair<int, int>& qr: queries[r]){
+            int l, idx; tie(l, idx) = qr;
+
+            res[idx] = Segtree_HLD::get(l, r) - pre[Segtree_LCA::get(l, r)];
+        }
+    }
+
+    for(int i = 0; i < q; ++i) cout << res[i] + 1 << "\n";
 }
 
 }
