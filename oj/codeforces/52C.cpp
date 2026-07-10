@@ -54,7 +54,7 @@ void add(int u, int v, int val, int id = 1, int l = 0, int r = n - 1){
 }
 
 int get(int u, int v, int id = 1, int l = 0, int r = n - 1){
-    if(v < l || r < u) return INT_MAX;
+    if(v < l || r < u) return LLONG_MAX;
     if(u <= l && r <= v) return nodes[id];
 
     push(id);
