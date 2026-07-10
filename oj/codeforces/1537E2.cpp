@@ -6,56 +6,15 @@ Time (YYYY-MM-DD-hh.mm.ss): 2026-07-10-15.50.11
 #include<bits/stdc++.h>
 using namespace std;
 
-vector<long long> HASH_MODS = {
-    1016426483LL,1052391971LL,1055604587LL,1071275489LL,1073865521LL,1088824091LL,1097195833LL,1098100813LL,1102079623LL,1111388491LL,1122479861LL,1124614159LL,1125143441LL,1129073237LL,1139517839LL,1149503423LL,1150558511LL,1178026901LL,1201680127LL,1202758027LL,
-    1216642003LL,1217622397LL,1220427953LL,1232080459LL,1233638011LL,1250735573LL,1251409213LL,1279822651LL,1297303321LL,1298024939LL,1302829637LL,1307428319LL,1322271911LL,1323373097LL,1328621599LL,1347569983LL,1394771167LL,1410726313LL,1416081071LL,1417231097LL,
-    1429586341LL,1440972707LL,1475317127LL,1482781607LL,1493219881LL,1494068419LL,1525650439LL,1529599081LL,1540840879LL,1542500837LL,1556401661LL,1563141529LL,1581064411LL,1582460401LL,1583510429LL,1596452401LL,1606424951LL,1607550401LL,1615853731LL,1619960123LL,
-    1621995163LL,1625976907LL,1641302249LL,1674540887LL,1678789921LL,1683453899LL,1691307077LL,1692177479LL,1706958853LL,1707577889LL,1718079767LL,1755616721LL,1797932473LL,1803300077LL,1813623113LL,1817989099LL,1853324867LL,1853438791LL,1856770483LL,1860289547LL,
-    1873938359LL,1878669901LL,1894242743LL,1914568693LL,1919044657LL,1926887159LL,1930412273LL,1932582391LL,1948974451LL,1962414317LL,1968629321LL,2009718001LL,2043284513LL,2056277851LL,2070167861LL,2077523537LL,2080703543LL,2101312529LL,2129516099LL,2141200927LL
-};
+namespace Hash{
+
 mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+bool isp(long long n){if(n<2)return 0;if(n<=3)return 1;if(n%2==0)return 0;long long d=n-1;int s=0;while(d%2==0)d/=2,s++;for(int i=0;i<5;i++){long long a=2+rng()%(n-3),x=1,b=a%n,e=d;while(e){if(e%2)x=(__int128)x*b%n;b=(__int128)b*b%n;e/=2;}if(x==1||x==n-1)continue;bool c=1;for(int r=1;r<s;r++){x=(__int128)x*x%n;if(x==n-1){c=0;break;}}if(c)return 0;}return 1;}
+long long gp(){while(1){long long p=1e9+rng()%(long long)1e9;if(isp(p))return p;}}
+struct Hash{long long BASE,MOD;vector<long long> hashes,powhash;Hash()=default;Hash(string S,long long _base=0,long long _mod=0){static long long s_mod=gp(),s_base=(rng()%(s_mod-256)+256)|1;MOD=_mod?_mod:s_mod;BASE=_base?_base:s_base;long long sz=S.size();hashes.resize(sz+1);powhash.resize(sz+1);S="#"+S;powhash[0]=1;hashes[0]=0;for(long long i=1;i<=sz;++i){hashes[i]=(hashes[i-1]*BASE+(unsigned char)S[i])%MOD;powhash[i]=powhash[i-1]*BASE%MOD;}}long long get(long long l,long long r){return ((hashes[r]-hashes[l-1]*powhash[r-l+1])%MOD+MOD)%MOD;}};
+struct DHash{Hash hash1,hash2;DHash(const string& S){static long long m1=gp(),m2=gp();while(m1==m2)m2=gp();hash1=Hash(S,0,m1);hash2=Hash(S,0,m2);}pair<long long,long long> get(long long l,long long r){return {hash1.get(l,r),hash2.get(l,r)};}};
 
-struct Hash{
-    long long BASE, MOD;
-    vector<long long> hashes;
-    vector<long long> powhash;
-
-    Hash() = default;
-    Hash(string S, long long _base = 0, long long _mod = 0): BASE(_base), MOD(_mod){
-        if(!MOD) MOD = HASH_MODS[rng() % HASH_MODS.size()];
-        if(!BASE) BASE = (rng() % (MOD - 256) + 256) | 1;
-
-        long long sz = S.size();
-        hashes.resize(sz + 1);
-        powhash.resize(sz + 1);
-
-        S = "#" + S;
-        powhash[0] = 1;
-        hashes[0] = 0;
-        for(long long i = 1; i <= sz; ++i){
-            hashes[i] = (hashes[i - 1] * BASE + (unsigned char)S[i]) % MOD;
-            powhash[i] = powhash[i - 1] * BASE % MOD;
-        }
-    }
-
-    long long get(long long l, long long r){
-        return ((hashes[r] - hashes[l - 1] * powhash[r - l + 1]) % MOD + MOD) % MOD;
-    }
-};
-
-struct DHash{
-    Hash hash1, hash2;
-
-    DHash(const string& S){
-        hash1 = Hash(S);
-        hash2 = Hash(S);
-        while(hash2.MOD == hash1.MOD) hash2 = Hash(S);
-    }
-
-    pair<long long, long long> get(long long l, long long r){
-        return {hash1.get(l, r), hash2.get(l, r)};
-    }
-};
+} using namespace Hash;
 
 void solve(){
     int n, k;
