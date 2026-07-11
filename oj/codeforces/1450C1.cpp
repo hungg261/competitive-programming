@@ -6,6 +6,19 @@ Time (YYYY-MM-DD-hh.mm.ss): 2026-07-11-09.39.41
 #include<bits/stdc++.h>
 using namespace std;
 
+// failed
+// WA test case:
+
+/*
+1
+5
+XXXXX
+XXX..
+X..XX
+XXXXX
+XXXXX
+*/
+
 void brute(){
     int n;
     cin >> n;
@@ -88,6 +101,7 @@ void solve(){
         if(best.first == 0) break;
 
         int x, y; tie(x, y) = best.second;
+//        for(int i = 0; i < n; ++i) for(int j = 0; j < n; ++j) cerr << freq[i][j] << " \n"[j == n - 1];
 
         for(int i = max(1, x - 1); i <= min(n - 2, x + 1); ++i){
             if(T[i - 1][y] == T[i][y] && T[i][y] == T[i + 1][y]){
@@ -140,7 +154,6 @@ void solve(){
         T[x][y] = 'O';
 
 //        for(auto z: S) cerr << "S: " << z.first << " | " << z.second.first << " " << z.second.second << "\n";
-//        for(int i = 0; i < n; ++i) for(int j = 0; j < n; ++j) cerr << freq[i][j] << " \n"[j == n - 1]; system("pause");
 //        for(int i = 0; i < n; ++i) cerr << T[i] << "\n"; system("pause");
     }
 
@@ -152,10 +165,10 @@ signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
 
     int t = 1;
-    //cin >> t;
+    cin >> t;
 
     while(t--){
-        brute();
+        solve();
     }
 
     return 0;
