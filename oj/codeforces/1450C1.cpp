@@ -17,6 +17,15 @@ XXX..
 X..XX
 XXXXX
 XXXXX
+===
+WA output:
+
+XXOXX
+XXO..
+O..XX
+XXOXX
+XXOOO
+  ^^^
 */
 
 void brute(){
