@@ -41,26 +41,32 @@ signed main()
 }
 #endif // __________
 
+const int INF = 1e9;
 const int MAXN = 2e6;
 int N;
 
 struct Node{
     int mn, mx;
-    int lz;
+    int lzmn, lzmx;
+
+    void init(){
+        mn = mx = 0;
+        lzmn = INF;
+        lzmx = -INF;
+    }
 
     Node operator + (const Node& other) const {
         Node res;
+        res.init();
         res.mn = min(mn, other.mn);
         res.mx = max(mx, other.mx);
-        res.lz = -1;
         return res;
     }
 } nodes[MAXN * 4 + 5];
 
 void build(int id = 1, int l = 0, int r = N - 1){
     if(l == r){
-        nodes[id].mn = nodes[id].mx = 0;
-        nodes[id].lz = -1;
+        nodes[id].init();
         return;
     }
 
@@ -70,24 +76,32 @@ void build(int id = 1, int l = 0, int r = N - 1){
     nodes[id] = nodes[id << 1] + nodes[id << 1 | 1];
 }
 
+void apply(int id, int lzmn, int lzmx){
+    nodes[id].mn = min(nodes[id].mn, lzmn);
+    nodes[id].mn = max(nodes[id].mn, lzmx);
+    nodes[id].mx = min(nodes[id].mx, lzmn);
+    nodes[id].mx = max(nodes[id].mx, lzmx);
+
+    int new_lzmn = min(nodes[id].lzmn, lzmn),
+        new_lzmx = max(nodes[id].lzmx, lzmx);
+    new_lzmn = max(new_lzmn, lzmx);
+    new_lzmx = min(new_lzmx, lzmn);
+
+    nodes[id].lzmn = new_lzmn;
+    nodes[id].lzmx = new_lzmx;
+}
+
 void push(int id){
-    if(nodes[id].lz != -1){
-        nodes[id << 1].mn = nodes[id << 1].mx = nodes[id].lz;
-        nodes[id << 1 | 1].mn = nodes[id << 1 | 1].mx = nodes[id].lz;
-
-        nodes[id << 1].lz = nodes[id].lz;
-        nodes[id << 1 | 1].lz = nodes[id].lz;
-
-        nodes[id].lz = -1;
-        return;
-    }
+    apply(id << 1, nodes[id].lzmn, nodes[id].lzmx);
+    apply(id << 1 | 1, nodes[id].lzmn, nodes[id].lzmx);
+    nodes[id].lzmn = INF;
+    nodes[id].lzmx = -INF;
 }
 
 void add(int u, int v, int val, int id = 1, int l = 0, int r = N - 1){
-    if(l > r || v < l || r < u) return;
+    if(l > r || v < l || r < u || nodes[id].mn >= val) return;
     if(u <= l && r <= v && nodes[id].mx <= val){
-        nodes[id].mn = nodes[id].mx = val;
-        nodes[id].lz = val;
+        apply(id, INF, val);
         return;
     }
     else if(l == r) return;
@@ -101,10 +115,9 @@ void add(int u, int v, int val, int id = 1, int l = 0, int r = N - 1){
 }
 
 void pop(int u, int v, int val, int id = 1, int l = 0, int r = N - 1){
-    if(l > r || v < l || r < u) return;
+    if(l > r || v < l || r < u || nodes[id].mx <= val) return;
     if(u <= l && r <= v && nodes[id].mn >= val){
-        nodes[id].mn = nodes[id].mx = val;
-        nodes[id].lz = val;
+        apply(id, val, -INF);
         return;
     }
     else if(l == r) return;
