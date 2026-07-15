@@ -16,6 +16,10 @@ struct Picture{
         return (V < other.V) || (V == other.V && S < other.S);
     }
 
+    bool operator > (const Picture& other) const {
+        return (V > other.V) || (V == other.V && S > other.S);
+    }
+
     friend istream& operator >> (istream& is, Picture& p){
         return is >> p.S >> p.V;
     }
@@ -83,6 +87,28 @@ void solve2(){
     cout << dp[N][M] << "\n";
 }
 
+}
+
+namespace Solve{
+
+void solve(){
+    sort(P + 1, P + N + 1, greater<Picture>());
+    sort(F + 1, F + M + 1, greater<int>());
+
+    int i = 1, j = 1;
+    int res = 0;
+    while(i <= N && j <= N){
+        if(P[i].S <= F[j]){
+            ++res;
+            ++i; ++j;
+        }
+        else{
+            ++i;
+        }
+    }
+
+    cout << res << "\n";
+}
 
 }
 
@@ -93,7 +119,7 @@ signed main(){
     for(int i = 1; i <= N; ++i) cin >> P[i];
     for(int i = 1; i <= M; ++i) cin >> F[i];
 
-    Brute::solve2();
+    Solve::solve();
 
     return 0;
 }
