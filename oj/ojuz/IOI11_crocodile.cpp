@@ -67,7 +67,12 @@ Pair w[MAXN + 5];
 mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 
 struct State{
-    int u, cost;
+    int u;
+    long long cost;
+
+    bool operator > (const State& other) const {
+        return cost > other.cost;
+    }
 };
 
 int32_t travel_plan(int32_t N, int32_t M, int32_t R[][2], int32_t L[], int32_t K, int32_t P[]){
@@ -78,14 +83,14 @@ int32_t travel_plan(int32_t N, int32_t M, int32_t R[][2], int32_t L[], int32_t K
     for(int u = 0; u < N; ++u)
         shuffle(begin(adj[u]), end(adj[u]), rng);
 
-    queue<State> que;
+    priority_queue<State, vector<State>, greater<State>> que;
     for(int i = 0; i < K; ++i){
         que.push({P[i], 0});
         w[P[i]][0] = w[P[i]][1] = 0;
     }
 
     while(!que.empty()){
-        State cur = que.front(); que.pop();
+        State cur = que.top(); que.pop();
         if(cur.cost != w[cur.u][1]) continue;
 
         for(const EdgeTo& e: adj[cur.u]){
