@@ -38,7 +38,7 @@ set<int> dfs_distinct(int u, int prv){
 
 namespace Solve{
 
-int res;
+int res = 0;
 map<int, int> dfs(int u = 1, int prv = -1){
     int nxt = -1;
     for(int v: adj[u]){
@@ -46,10 +46,18 @@ map<int, int> dfs(int u = 1, int prv = -1){
         if(nxt == -1 || distinct[v] > distinct[nxt]) nxt = v;
     }
 
-
     map<int, int> f;
     if(nxt != -1) f = dfs(nxt, u);
     f[a[u]] = max(f[a[u]], 1);
+
+    map<int, int> pre;
+    {
+        int best = 0;
+        for(const pair<int, int>& p: f){
+            pre[p.first] = best;
+            best = max(best, p.second);
+        }
+    }
 
     for(int v: adj[u]){
         if(v == prv || v == nxt) continue;
@@ -57,6 +65,7 @@ map<int, int> dfs(int u = 1, int prv = -1){
         map<int, int> fs = dfs(v, u);
 
         for(const pair<int, int>& p: fs){
+            f[p]
 
         }
     }
