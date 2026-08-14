@@ -78,7 +78,7 @@ signed main(){
             int l, r, x;
             cin >> l >> r >> x;
 
-            cout << get(l, r-1) << " " << get(l, r - 1).eval(x) << "\n";
+            cout << get(l, r - 1).eval(x) << "\n";
         }
     }
 
