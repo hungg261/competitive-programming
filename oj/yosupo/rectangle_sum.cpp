@@ -62,17 +62,56 @@ struct FenwickTree2D{
 };
 
 int n, q;
+vector<int> Xs, Ys;
+
+inline int v(int x, vector<int>& Vs){ return lower_bound(begin(Vs), end(Vs), x) - begin(Vs) + 1; }
+
+struct Query{
+    int x1, y1, x2, y2;
+
+    Query(int _x1, int _y1, int _x1, int _y2)
+        x1(_x1), y1(_y1), x2(_x2), y2(_y2){
+            Xs.push_back(x1);
+            Xs.push_back(x2);
+            Ys.push_back(y1);
+            Ys.push_back(y2);
+        }
+
+    void compress(){
+        x1 = v(x1);
+        y1 = v(y1);
+        x2 = v(x2);
+        y2 = v(y2);
+
+    }
+};
+
+struct Update{
+    int x1, y1;
+
+    Update(int _x1, int _y1, int _x1, int _y2)
+        x1(_x1), y1(_y1){
+            Xs.push_back(x1);
+            Ys.push_back(y1);
+        }
+
+    void compress(){
+        x1 = v(x1);
+        y1 = v(y1);
+
+    }
+};
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
 
     cin >> n >> q;
-    FenwickTree2D()
+    vector<Query> queries;
     for(int i = 1; i <= n; ++i){
         int x, y, w;
         cin >> x >> y >> w;
 
-
+        queries.emplace_back()
     }
 
     return 0;
