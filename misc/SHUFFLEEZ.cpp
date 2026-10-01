@@ -18,27 +18,27 @@ void compute(){
         fact[i] = fact[i - 1] * i % MOD;
 }
 
+int powmod(int a, int b, int mod = MOD){
+    int res = 1 % mod;
+    a %= mod;
+    while(b > 0){
+        if(b & 1) res = res * a % mod;
+        a = a * a % mod;
+        b >>= 1;
+    }
+
+    return res;
+}
+
 int n, k, q[MAXN + 5];
 
 void solve(){
     cin >> n >> k;
-//    for(int i = 1; i <= n; ++i){
-//        cin >> q[i];
-//    }
-
-    int res = fact[n];
-    int left = n - k;
-    for(int i = n - 1, t = 0; t < n - k; --i, ++t){
-        int delta = fact[i] * left % MOD * (left + 1) % MOD * INVMOD % MOD;
-        if(t & 1) res += delta;
-        else res -= delta;
-        res %= MOD;
-
-        cerr << res << " | " << delta << "\n";
-
-        --left;
+    for(int i = 1; i <= n; ++i){
+        cin >> q[i];
     }
 
+    int res = fact[k] * powmod(k, n - k) % MOD;
     cout << (res + MOD) % MOD << "\n";
 }
 
@@ -48,7 +48,7 @@ signed main(){
     compute();
 
     int t = 1;
-//    cin >> t;
+    cin >> t;
 
     while(t--){
         solve();
