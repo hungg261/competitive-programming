@@ -1,0 +1,2586 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competitive Programming · hungg261</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --text: #1f2328;
+    --muted: #656d76;
+    --soft: #8c959f;
+    --border: #e6e8eb;
+    --border-strong: #d0d7de;
+    --accent: #0969da;
+    --accent-soft: #ddf4ff;
+    --accent-border: #b6e3ff;
+    --hover: #f6f8fa;
+    --shadow: 0 1px 3px rgba(27, 31, 36, 0.04);
+    --shadow-hover: 0 4px 12px rgba(27, 31, 36, 0.08);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --danger: #cf222e;
+    --danger-soft: #ffebe9;
+  }
+
+  html { -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 56px 24px 80px; }
+
+  header { margin-bottom: 48px; }
+
+  .eyebrow {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--soft);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text); margin-bottom: 12px; }
+  h1 a { color: inherit; text-decoration: none; }
+  h1 a:hover { color: var(--accent); }
+
+  .lede { color: var(--muted); font-size: 1rem; max-width: 620px; }
+
+  section { margin-bottom: 40px; }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    gap: 12px;
+  }
+
+  .stats > .section-head {
+    cursor: pointer;
+    user-select: none;
+    padding: 10px 14px;
+    margin: -10px -14px 14px;
+    border-radius: 10px;
+    transition: background 0.15s ease;
+  }
+
+  .stats > .section-head:hover { background: var(--hover); }
+  .stats > .section-head:hover .section-chevron { color: var(--accent); }
+
+  .section-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title .path {
+    font-family: var(--mono);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.78rem;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-weight: 500;
+  }
+
+  .section-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  .section-count {
+    font-size: 0.8rem;
+    color: var(--soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .section-chevron {
+    width: 14px;
+    height: 14px;
+    color: var(--soft);
+    transition: transform 0.2s ease, color 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .stats.collapsed .section-chevron { transform: rotate(-90deg); }
+  .stats.collapsed > .section-content { display: none; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+
+  .card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    box-shadow: var(--shadow);
+  }
+
+  .card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .card:hover .card-name { color: var(--accent); }
+
+  .card-name {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--text);
+    transition: color 0.15s ease;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+
+  .card-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 0.78rem; }
+  .card-count { font-variant-numeric: tabular-nums; font-weight: 500; color: var(--muted); }
+  .card-count strong { color: var(--text); font-weight: 600; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: var(--hover);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .tag.vn { background: #fff5e6; color: #b25c00; border-color: #ffe2bf; }
+
+  .overview { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 40px; }
+
+  .overview-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  }
+
+  .overview-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+
+  .overview-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .overview-icon svg { width: 16px; height: 16px; }
+  .overview-body { flex: 1; min-width: 0; }
+  .overview-name { font-family: var(--mono); font-size: 1rem; font-weight: 600; color: var(--text); }
+
+  .overview-meta {
+    font-size: 0.78rem;
+    color: var(--soft);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+
+  .overview-arrow { color: var(--soft); flex-shrink: 0; transition: transform 0.15s ease, color 0.15s ease; }
+  .overview-card:hover .overview-arrow { color: var(--accent); transform: translateX(3px); }
+
+  .stats {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+  }
+
+  .stats > .section-head { margin-bottom: 0; }
+  .stats:not(.collapsed) > .section-head { margin-bottom: 20px; }
+
+  .stats-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 56px 20px;
+  }
+
+  .stats-loading[hidden] { display: none; }
+
+  .progress-circle { position: relative; width: 96px; height: 96px; }
+
+  .progress-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+  .progress-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+
+  .progress-fg {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 276.46;
+    stroke-dashoffset: 276.46;
+    transition: stroke-dashoffset 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .progress-pct {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .progress-label { font-size: 0.9rem; font-weight: 500; color: var(--text); text-align: center; }
+
+  .progress-step {
+    font-size: 0.78rem;
+    color: var(--soft);
+    text-align: center;
+    font-family: var(--mono);
+    min-height: 1.2em;
+    max-width: 380px;
+  }
+
+  .stats-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .stats-error[hidden] { display: none; }
+
+  .stats-error-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--danger-soft);
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stats-error-icon svg { width: 24px; height: 24px; }
+
+  .stats-error-title { font-weight: 600; color: var(--text); }
+
+  .stats-error-msg { font-size: 0.85rem; max-width: 400px; }
+
+  .retry-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  .retry-btn:hover { background: var(--hover); }
+
+  .stats-loaded[hidden] { display: none; }
+
+  .stats-loaded { display: flex; flex-direction: column; gap: 18px; }
+
+  .sub-stats {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .sub-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--hover);
+    cursor: pointer;
+    user-select: none;
+    gap: 12px;
+    transition: background 0.15s ease;
+  }
+
+  .sub-head:hover { background: #eef1f4; }
+
+  .sub-title { font-size: 0.82rem; font-weight: 600; color: var(--text); letter-spacing: 0.02em; }
+
+  .sub-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  .sub-count {
+    font-size: 0.76rem;
+    color: var(--soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sub-chevron {
+    width: 13px;
+    height: 13px;
+    color: var(--soft);
+    transition: transform 0.2s ease, color 0.15s ease;
+    flex-shrink: 0;
+  }
+
+  .sub-stats.collapsed .sub-chevron { transform: rotate(-90deg); }
+  .sub-stats.collapsed .sub-body { display: none; }
+
+  .sub-body { padding: 20px 22px; }
+
+  .chart-card { display: grid; grid-template-columns: 180px 1fr; gap: 32px; align-items: center; }
+
+  .donut-wrap { position: relative; width: 180px; height: 180px; flex-shrink: 0; }
+  .donut-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+  .donut-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .donut-label { font-family: var(--mono); font-size: 0.75rem; color: var(--soft); margin-bottom: 2px; }
+
+  .donut-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .legend { display: flex; flex-direction: column; gap: 12px; }
+
+  .legend-row {
+    display: grid;
+    grid-template-columns: 14px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    font-size: 0.88rem;
+  }
+
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-name { color: var(--text); font-weight: 500; }
+
+  .legend-stats {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.82rem;
+  }
+
+  .legend-stats strong { color: var(--text); font-weight: 600; margin-right: 8px; }
+
+  .legend-bar {
+    grid-column: 1 / -1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: -4px;
+  }
+
+  .legend-bar span { display: block; height: 100%; border-radius: 2px; }
+
+  .bar-chart { display: flex; align-items: stretch; gap: 10px; height: 200px; padding-top: 8px; }
+
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .bar-value { font-size: 0.78rem; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+
+  .bar-track { width: 100%; flex: 1; display: flex; align-items: flex-end; justify-content: center; }
+
+  .bar-rect {
+    width: 100%;
+    max-width: 42px;
+    background: linear-gradient(180deg, #58a6ff 0%, #0969da 100%);
+    border-radius: 5px 5px 0 0;
+    min-height: 4px;
+    transition: filter 0.15s ease;
+  }
+
+  .bar-col:hover .bar-rect { filter: brightness(1.1); }
+
+  .bar-label { font-size: 0.7rem; color: var(--soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .bar-empty { text-align: center; color: var(--soft); font-size: 0.85rem; padding: 60px 20px; }
+
+  .hbar-chart { display: flex; flex-direction: column; gap: 14px; }
+
+  .hbar-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 56px;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .hbar-label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .hbar-track {
+    height: 22px;
+    background: var(--hover);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hbar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #58a6ff 0%, #0969da 100%);
+    border-radius: 6px;
+    width: 0;
+    transition: width 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hbar-value {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--text);
+    text-align: right;
+    font-size: 0.85rem;
+  }
+
+  .heatmap-wrap {
+    overflow-x: auto;
+    padding-bottom: 4px;
+    margin: 0 -4px;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .heatmap-inner { display: inline-flex; gap: 8px; min-width: 100%; }
+
+  .heatmap-weekdays { display: flex; flex-direction: column; gap: 3px; flex-shrink: 0; }
+  .heatmap-weekday-spacer { height: 16px; }
+
+  .heatmap-weekday {
+    height: 12px;
+    line-height: 12px;
+    font-size: 0.68rem;
+    color: var(--soft);
+    text-align: right;
+    padding-right: 4px;
+    width: 22px;
+    flex-shrink: 0;
+  }
+
+  .heatmap-right { display: flex; flex-direction: column; gap: 3px; }
+
+  .heatmap-month-row { height: 16px; position: relative; }
+
+  .heatmap-month-label {
+    position: absolute;
+    top: 0;
+    font-size: 0.7rem;
+    color: var(--soft);
+    line-height: 16px;
+    white-space: nowrap;
+  }
+
+  .heatmap-grid {
+    display: grid;
+    grid-template-rows: repeat(7, 12px);
+    grid-auto-flow: column;
+    grid-auto-columns: 12px;
+    gap: 3px;
+  }
+
+  .heatmap-cell {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: #ebedf0;
+    cursor: pointer;
+    transition: transform 0.1s ease, outline 0.1s ease;
+    outline: 0 solid transparent;
+  }
+
+  .heatmap-cell:not(.empty):hover {
+    transform: scale(1.35);
+    outline: 2px solid var(--accent);
+    outline-offset: 0;
+    z-index: 2;
+    position: relative;
+  }
+
+  .heatmap-cell.empty { background: transparent; cursor: default; }
+  .heatmap-cell.selected { outline: 2px solid var(--accent); outline-offset: 0; }
+  .heatmap-cell.today { box-shadow: inset 0 0 0 1.5px #0a3069; }
+
+  .heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 14px;
+    font-size: 0.76rem;
+    color: var(--soft);
+    justify-content: flex-end;
+  }
+
+  .heatmap-legend .heatmap-cell { width: 12px; height: 12px; border-radius: 2px; cursor: default; }
+  .heatmap-legend .heatmap-cell:hover { transform: none; outline: none; }
+  .heatmap-legend .label { margin: 0 6px; }
+
+  .day-detail {
+    margin-top: 20px;
+    padding: 18px 20px;
+    background: var(--hover);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    animation: dayDetailIn 0.2s ease;
+  }
+
+  @keyframes dayDetailIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .day-detail[hidden] { display: none; }
+
+  .day-detail-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 14px;
+  }
+
+  .day-detail-meta { display: flex; gap: 32px; flex-wrap: wrap; min-width: 0; }
+
+  .day-detail-item { display: flex; flex-direction: column; gap: 2px; }
+
+  .day-detail-label {
+    font-size: 0.7rem;
+    color: var(--soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+
+  .day-detail-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .day-detail-total .day-detail-value { color: var(--accent); font-size: 1.15rem; }
+
+  .day-detail-close {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    flex-shrink: 0;
+    font-family: inherit;
+  }
+
+  .day-detail-close:hover { background: var(--danger-soft); color: var(--danger); border-color: #ffcecb; }
+
+  .day-detail-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .day-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 42px;
+    gap: 12px;
+    align-items: center;
+    font-size: 0.84rem;
+  }
+
+  .day-row-name { color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .day-row-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+
+  .day-row-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    width: 0;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .day-row-count { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--text); text-align: right; }
+
+  .day-empty { text-align: center; color: var(--soft); font-size: 0.85rem; padding: 16px 0; }
+
+  .pathbar { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    padding: 0;
+  }
+
+  .back-btn:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .back-btn:active { transform: scale(0.94); }
+  .back-btn svg { width: 15px; height: 15px; }
+
+  .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 0.86rem; flex-wrap: wrap; min-width: 0; }
+
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 6px;
+    margin: -3px -6px;
+    border-radius: 5px;
+    transition: background 0.15s ease;
+    cursor: pointer;
+  }
+
+  .breadcrumb a:hover { background: var(--accent-soft); }
+  .breadcrumb .sep { color: var(--border-strong); font-weight: 300; user-select: none; }
+
+  .breadcrumb .current {
+    color: var(--text);
+    font-weight: 600;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 240px;
+  }
+
+  .breadcrumb svg { width: 14px; height: 14px; }
+
+  .folder-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .folder-title { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; font-family: var(--mono); color: var(--text); }
+
+  .folder-count { font-size: 0.82rem; color: var(--soft); font-variant-numeric: tabular-nums; }
+
+  .file-list {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .file-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 18px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .file-row:last-child { border-bottom: none; }
+  .file-row:hover { background: var(--hover); }
+  .file-row:hover .file-name { color: var(--accent); }
+
+  .file-icon { width: 16px; height: 16px; flex-shrink: 0; color: var(--soft); }
+
+  .file-name {
+    flex: 1;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--text);
+    transition: color 0.15s ease;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .file-size { font-size: 0.75rem; color: var(--soft); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+  .metadata-bar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 12px 18px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  .metadata-bar[hidden] { display: none; }
+
+  .metadata-item { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+
+  .metadata-item svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--accent); }
+  .metadata-item.time svg { color: var(--soft); }
+
+  .metadata-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    font-family: var(--mono);
+    font-size: 0.84rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 340px;
+  }
+
+  .metadata-link:hover { text-decoration: underline; }
+
+  .metadata-time {
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metadata-code {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--accent);
+    background: #ffffff;
+    padding: 2px 8px;
+    border-radius: 5px;
+    border: 1px solid var(--accent-border);
+    font-size: 0.8rem;
+  }
+
+  .file-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .file-title-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .file-title-row svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--soft); }
+
+  .file-title {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .file-size-meta {
+    font-size: 0.78rem;
+    color: var(--soft);
+    font-variant-numeric: tabular-nums;
+    padding-left: 6px;
+    border-left: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .file-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .btn:hover { background: var(--hover); border-color: var(--soft); }
+  .btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .btn.copied { background: #dafbe1; border-color: #aceebb; color: #1a7f37; }
+  .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
+  .code-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .code-scroll { overflow-x: auto; max-height: 640px; overflow-y: auto; }
+
+  .code { font-family: var(--mono); font-size: 0.82rem; line-height: 1.65; padding: 16px 0; tab-size: 4; }
+
+  .code-line { display: flex; min-height: 1.35em; }
+  .code-line:hover { background: var(--hover); }
+
+  .code-num {
+    flex-shrink: 0;
+    width: 48px;
+    text-align: right;
+    padding-right: 16px;
+    color: var(--soft);
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .code-text { flex: 1; padding-right: 20px; white-space: pre; color: var(--text); }
+
+  .tok-string  { color: #0a3069; }
+  .tok-keyword { color: #cf222e; }
+  .tok-type    { color: #8250df; }
+  .tok-number  { color: #0550ae; }
+  .tok-pre     { color: #953800; }
+  .tok-meta    { color: #6e7781; font-style: italic; }
+
+  .code-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 60px 20px;
+    color: var(--soft);
+    font-size: 0.9rem;
+  }
+
+  .spinner {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translate(-50%, 20px);
+    background: #1f2328;
+    color: #fff;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-size: 0.83rem;
+    box-shadow: 0 8px 24px rgba(27, 31, 36, 0.24);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 100;
+    max-width: calc(100vw - 32px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    color: var(--soft);
+    font-size: 0.8rem;
+  }
+
+  footer a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  footer a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  .skeleton {
+    background: linear-gradient(90deg, var(--border) 0%, var(--hover) 50%, var(--border) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease infinite;
+    border-radius: 4px;
+  }
+
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+  }
+
+  @media (max-width: 640px) {
+    .chart-card { grid-template-columns: 1fr; gap: 20px; }
+    .donut-wrap { margin: 0 auto; }
+    .bar-chart { height: 160px; gap: 6px; }
+    .hbar-row { grid-template-columns: 90px 1fr 44px; gap: 10px; }
+    .day-row { grid-template-columns: 100px 1fr 36px; gap: 10px; }
+  }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 32px 18px 60px; }
+    h1 { font-size: 1.5rem; }
+    .lede { font-size: 0.92rem; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    .folder-title { font-size: 1.15rem; }
+    .file-head { flex-direction: column; align-items: stretch; }
+    .file-actions { justify-content: flex-start; }
+    .metadata-link { max-width: 180px; }
+    .sub-body { padding: 16px 14px; }
+    .stats { padding: 16px 14px; }
+    .day-detail { padding: 14px 16px; }
+    .day-detail-meta { gap: 20px; }
+  }
+
+  @media (max-width: 400px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header>
+      <div class="eyebrow">Repository</div>
+      <h1>
+        <a href="https://github.com/hungg261/competitive-programming" target="_blank" rel="noopener" id="repo-link">
+          hungg261 / competitive-programming
+        </a>
+      </h1>
+      <p class="lede">
+        Kho lưu trữ mã nguồn lập trình thi đấu.
+      </p>
+    </header>
+
+    <div class="view active" id="view-home">
+
+      <div class="overview" id="overview"></div>
+
+      <section id="oj-section">
+        <div class="section-head">
+          <div class="section-title">
+            <span class="path">oj/</span>
+            <span>Online Judges</span>
+          </div>
+          <div class="section-right">
+            <span class="section-count" id="oj-summary"></span>
+          </div>
+        </div>
+        <div class="grid" id="oj-grid"></div>
+      </section>
+
+      <section class="stats collapsed" id="stats-section">
+        <div class="section-head" id="stats-head">
+          <div class="section-title"><span>Thống kê</span></div>
+          <div class="section-right">
+            <span class="section-count" id="stats-summary"></span>
+            <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="section-content">
+
+          <div class="stats-loading" id="stats-loading" hidden>
+            <div class="progress-circle">
+              <svg viewBox="0 0 100 100" aria-hidden="true">
+                <circle class="progress-bg" cx="50" cy="50" r="44"/>
+                <circle class="progress-fg" id="progress-fg" cx="50" cy="50" r="44"/>
+              </svg>
+              <div class="progress-pct" id="progress-pct">0%</div>
+            </div>
+            <div class="progress-label">Đang tải dữ liệu thống kê</div>
+            <div class="progress-step" id="progress-step">Khởi tạo…</div>
+          </div>
+
+          <div class="stats-error" id="stats-error" hidden>
+            <div class="stats-error-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="stats-error-title">Không tải được thống kê</div>
+            <div class="stats-error-msg" id="stats-error-msg"></div>
+            <button class="retry-btn" id="retry-btn" type="button">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              <span>Thử lại</span>
+            </button>
+          </div>
+
+          <div class="stats-loaded" id="stats-loaded" hidden>
+
+            <div class="sub-stats" id="sub-lang">
+              <div class="sub-head" data-sub-toggle="sub-lang">
+                <div class="sub-title">Ngôn ngữ lập trình</div>
+                <div class="sub-right">
+                  <span class="sub-count" id="lang-count"></span>
+                  <svg class="sub-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+              <div class="sub-body">
+                <div class="chart-card">
+                  <div class="donut-wrap">
+                    <svg id="donut" viewBox="0 0 100 100" aria-hidden="true"></svg>
+                    <div class="donut-center">
+                      <div class="donut-label" id="donut-label">C++</div>
+                      <div class="donut-value" id="donut-value">0%</div>
+                    </div>
+                  </div>
+                  <div class="legend" id="legend"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-stats" id="sub-oj-compare">
+              <div class="sub-head" data-sub-toggle="sub-oj-compare">
+                <div class="sub-title">So sánh Online Judges</div>
+                <div class="sub-right">
+                  <span class="sub-count" id="hbar-summary"></span>
+                  <svg class="sub-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+              <div class="sub-body">
+                <div class="hbar-chart" id="hbar-chart"></div>
+              </div>
+            </div>
+
+            <div class="sub-stats" id="sub-monthly">
+              <div class="sub-head" data-sub-toggle="sub-monthly">
+                <div class="sub-title">Hoạt động theo tháng</div>
+                <div class="sub-right">
+                  <span class="sub-count" id="activity-summary"></span>
+                  <svg class="sub-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+              <div class="sub-body">
+                <div class="bar-chart" id="bar-chart"></div>
+              </div>
+            </div>
+
+            <div class="sub-stats" id="sub-heatmap">
+              <div class="sub-head" data-sub-toggle="sub-heatmap">
+                <div class="sub-title">Heatmap hoạt động</div>
+                <div class="sub-right">
+                  <span class="sub-count" id="heatmap-summary"></span>
+                  <svg class="sub-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+              </div>
+              <div class="sub-body">
+                <div class="heatmap-wrap">
+                  <div class="heatmap-inner">
+                    <div class="heatmap-weekdays">
+                      <div class="heatmap-weekday-spacer"></div>
+                      <div class="heatmap-weekday">CN</div>
+                      <div class="heatmap-weekday"></div>
+                      <div class="heatmap-weekday">T3</div>
+                      <div class="heatmap-weekday"></div>
+                      <div class="heatmap-weekday">T5</div>
+                      <div class="heatmap-weekday"></div>
+                      <div class="heatmap-weekday">T7</div>
+                    </div>
+                    <div class="heatmap-right">
+                      <div class="heatmap-month-row" id="heatmap-month-row"></div>
+                      <div class="heatmap-grid" id="heatmap-grid"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="heatmap-legend">
+                  <span class="label">Ít</span>
+                  <span class="heatmap-cell" style="background:#ebedf0"></span>
+                  <span class="heatmap-cell" style="background:#b6e3ff"></span>
+                  <span class="heatmap-cell" style="background:#54aeff"></span>
+                  <span class="heatmap-cell" style="background:#0969da"></span>
+                  <span class="heatmap-cell" style="background:#0a3069"></span>
+                  <span class="label">Nhiều</span>
+                </div>
+                <div class="day-detail" id="day-detail" hidden></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="view" id="view-folder">
+      <div class="pathbar">
+        <button class="back-btn" id="folder-back" type="button" aria-label="Quay lại">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <nav class="breadcrumb" id="folder-breadcrumb"></nav>
+      </div>
+      <div class="folder-head">
+        <div class="folder-title" id="folder-title"></div>
+        <div class="folder-count" id="folder-count"></div>
+      </div>
+      <div class="file-list" id="file-list"></div>
+    </div>
+
+    <div class="view" id="view-file">
+      <div class="pathbar">
+        <button class="back-btn" id="file-back" type="button" aria-label="Quay lại">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <nav class="breadcrumb" id="file-breadcrumb"></nav>
+      </div>
+
+      <div class="metadata-bar" id="file-metadata" hidden></div>
+
+      <div class="file-head">
+        <div class="file-title-row">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Z"/></svg>
+          <h2 class="file-title" id="file-title"></h2>
+          <span class="file-size-meta" id="file-size-meta"></span>
+        </div>
+        <div class="file-actions">
+          <button class="btn" id="btn-copy" type="button">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/><path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/></svg>
+            <span id="btn-copy-label">Copy</span>
+          </button>
+          <a class="btn" id="btn-github" target="_blank" rel="noopener">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+            <span>GitHub ↗</span>
+          </a>
+        </div>
+      </div>
+      <div class="code-wrap">
+        <div class="code-scroll">
+          <div class="code" id="code-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span>Competitive Programming</span>
+      <a href="https://github.com/hungg261/competitive-programming" target="_blank" rel="noopener" id="footer-link">GitHub ↗</a>
+    </footer>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function () {
+
+  const REPO = {
+    owner: 'hungg261',
+    name: 'competitive-programming',
+    branch: 'main'
+  };
+
+  const OJ_BADGES = {
+    'oj/lqdoj':    { label: 'Việt Nam', kind: 'vn' },
+    'oj/marisaoj': { label: 'Việt Nam', kind: 'vn' },
+    'oj/vnoj':     { label: 'Việt Nam', kind: 'vn' }
+  };
+
+  const TOP_FOLDERS = ['oj', 'misc'];
+
+  const FILE_EXTS = new Set(['cpp', 'cc', 'cxx', 'c', 'h', 'hpp', 'py', 'sh', 'md', 'txt', 'js', 'java']);
+
+  const LANGS = [
+    { name: 'C++',      exts: ['cpp', 'cc', 'cxx', 'h', 'hpp'], color: '#0969da' },
+    { name: 'C',        exts: ['c'],                           color: '#8250df' },
+    { name: 'Python',   exts: ['py'],                          color: '#bf8700' },
+    { name: 'Shell',    exts: ['sh'],                          color: '#1a7f37' },
+    { name: 'Pascal', exts: ['pas'],                          color: '#cf222e' }
+  ];
+
+  const API_BASE = 'https://api.github.com/repos/' + REPO.owner + '/' + REPO.name;
+  const RAW_BASE = 'https://raw.githubusercontent.com/' + REPO.owner + '/' + REPO.name + '/' + REPO.branch + '/';
+  const BLOB_BASE = 'https://github.com/' + REPO.owner + '/' + REPO.name + '/blob/' + REPO.branch + '/';
+  const TREE_API = API_BASE + '/git/trees/' + REPO.branch + '?recursive=1';
+
+  const CACHE_KEY_TREE = 'cp_tree_v1';
+  const CACHE_KEY_TREE_TS = 'cp_tree_ts_v1';
+  const CACHE_KEY_META = 'cp_meta_v1';
+  const CACHE_KEY_META_TS = 'cp_meta_ts_v1';
+
+  const TREE_TTL = 60 * 60 * 1000;
+  const META_TTL = 6 * 60 * 60 * 1000;
+
+  const FETCH_CONCURRENCY = 12;
+
+  const MONTH_LABELS = ['Th1', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7', 'Th8', 'Th9', 'Th10', 'Th11', 'Th12'];
+  const WEEKDAY_LABELS = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+
+  const HEATMAP_DAYS = 365;
+  const HEATMAP_WEEK_WIDTH = 15;
+  const PROGRESS_CIRCUMFERENCE = 2 * Math.PI * 44;
+
+  const $ = id => document.getElementById(id);
+
+  const views = {
+    home:   $('view-home'),
+    folder: $('view-folder'),
+    file:   $('view-file')
+  };
+
+  const ojGrid      = $('oj-grid');
+  const ojSummary   = $('oj-summary');
+  const overviewEl  = $('overview');
+
+  const statsSection   = $('stats-section');
+  const statsHead      = $('stats-head');
+  const statsSummary   = $('stats-summary');
+  const statsLoading   = $('stats-loading');
+  const statsLoaded    = $('stats-loaded');
+  const statsError     = $('stats-error');
+  const statsErrorMsg  = $('stats-error-msg');
+  const retryBtn       = $('retry-btn');
+  const progressFg     = $('progress-fg');
+  const progressPct    = $('progress-pct');
+  const progressStep   = $('progress-step');
+
+  const folderBreadcrumb = $('folder-breadcrumb');
+  const folderTitle      = $('folder-title');
+  const folderCount      = $('folder-count');
+  const fileList         = $('file-list');
+  const folderBack       = $('folder-back');
+
+  const fileBreadcrumb = $('file-breadcrumb');
+  const fileTitle      = $('file-title');
+  const fileSizeMeta   = $('file-size-meta');
+  const fileMetadata   = $('file-metadata');
+  const codeContent    = $('code-content');
+  const btnCopy        = $('btn-copy');
+  const btnCopyLabel   = $('btn-copy-label');
+  const btnGithub      = $('btn-github');
+  const fileBack       = $('file-back');
+
+  const toastEl   = $('toast');
+  const ojSection = $('oj-section');
+
+  const donutEl      = $('donut');
+  const donutLabel   = $('donut-label');
+  const donutValueEl = $('donut-value');
+  const legendEl     = $('legend');
+  const langCount    = $('lang-count');
+
+  const barChart     = $('bar-chart');
+  const activitySum  = $('activity-summary');
+
+  const hbarChart    = $('hbar-chart');
+  const hbarSummary  = $('hbar-summary');
+
+  const heatmapGrid      = $('heatmap-grid');
+  const heatmapMonthRow  = $('heatmap-month-row');
+  const heatmapSummary   = $('heatmap-summary');
+  const dayDetail        = $('day-detail');
+
+  let structure = null;
+  let structureReady = false;
+  let treeLoadingPromise = null;
+
+  let ojList = [];
+
+  const metadataCache = {};
+  const contentCache = {};
+  const parsedFiles = new Set();
+
+  let statsLoadedFlag = false;
+  let statsLoadingFlag = false;
+
+  let toastTimer = null;
+  let currentCode = '';
+  let currentPath = '';
+  let selectedDayKey = null;
+
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2200);
+  }
+
+  function formatSize(bytes) {
+    if (bytes == null) return '';
+    if (bytes < 1024) return bytes + ' B';
+    return (bytes / 1024).toFixed(1) + ' KB';
+  }
+
+  function formatNumber(n) {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function showView(name) {
+    for (const k in views) views[k].classList.toggle('active', k === name);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toDateKey(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + d;
+  }
+
+  function getExt(name) {
+    const i = name.lastIndexOf('.');
+    if (i < 0) return '';
+    return name.slice(i + 1).toLowerCase();
+  }
+
+  function isAllowedFile(name) {
+    return FILE_EXTS.has(getExt(name));
+  }
+
+  function sleep(ms) {
+    return new Promise(function (r) { setTimeout(r, ms); });
+  }
+
+  function readCache(key, tsKey, ttl) {
+    try {
+      const ts = localStorage.getItem(tsKey);
+      if (!ts) return null;
+      if (Date.now() - parseInt(ts, 10) > ttl) return null;
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeCache(key, tsKey, data) {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+      localStorage.setItem(tsKey, String(Date.now()));
+    } catch (e) {}
+  }
+
+  function buildStructureFromTree(tree) {
+    const struct = {};
+
+    tree.forEach(function (item) {
+      if (item.type !== 'blob') return;
+      const parts = item.path.split('/');
+      if (parts.length < 2) return;
+      if (TOP_FOLDERS.indexOf(parts[0]) === -1) return;
+
+      const name = parts[parts.length - 1];
+      if (!isAllowedFile(name)) return;
+      if (name.startsWith('.')) return;
+
+      const parent = parts.slice(0, -1).join('/');
+      if (!struct[parent]) struct[parent] = [];
+      struct[parent].push({
+        name: name,
+        path: item.path,
+        size: item.size,
+        ext: getExt(name)
+      });
+    });
+
+    return struct;
+  }
+
+  function buildOjList(struct) {
+    const result = [];
+    const ojChildren = struct['oj'] || [];
+    const names = {};
+
+    Object.keys(struct).forEach(function (path) {
+      if (!path.startsWith('oj/')) return;
+      const parts = path.split('/');
+      if (parts.length !== 2) return;
+      names[parts[1]] = true;
+    });
+
+    Object.keys(names).sort().forEach(function (child) {
+      const path = 'oj/' + child;
+      const displayName = child.charAt(0).toUpperCase() + child.slice(1);
+      result.push({
+        name: displayName,
+        path: path,
+        badge: OJ_BADGES[path] || null
+      });
+    });
+
+    return result;
+  }
+
+  function fetchTree() {
+    if (treeLoadingPromise) return treeLoadingPromise;
+
+    const cached = readCache(CACHE_KEY_TREE, CACHE_KEY_TREE_TS, TREE_TTL);
+    if (cached) {
+      structure = cached;
+      ojList = buildOjList(structure);
+      structureReady = true;
+      return Promise.resolve(structure);
+    }
+
+    treeLoadingPromise = fetch(TREE_API, {
+      headers: { 'Accept': 'application/vnd.github+json' }
+    })
+      .then(function (res) {
+        if (!res.ok) {
+          if (res.status === 403) throw new Error('Vượt giới hạn API GitHub. Vui lòng thử lại sau.');
+          throw new Error('HTTP ' + res.status);
+        }
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data.tree) throw new Error('Dữ liệu cây không hợp lệ');
+        const struct = buildStructureFromTree(data.tree);
+        writeCache(CACHE_KEY_TREE, CACHE_KEY_TREE_TS, struct);
+        structure = struct;
+        ojList = buildOjList(structure);
+        structureReady = true;
+        return struct;
+      });
+
+    return treeLoadingPromise;
+  }
+
+  function countFiles(path) {
+    if (!structureReady || !structure) return 0;
+    if (path === 'oj') {
+      let n = 0;
+      ojList.forEach(function (oj) { n += (structure[oj.path] || []).length; });
+      return n;
+    }
+    return (structure[path] || []).length;
+  }
+
+  function totalOjCount() {
+    return countFiles('oj');
+  }
+
+  function parseHeaderMetadata(content) {
+    const headerRegex = /\/\*{10,}\s*\n([\s\S]*?)\n\s*\*{10,}\//;
+    const match = content.match(headerRegex);
+    if (!match) return null;
+
+    const block = match[1];
+    const metadata = {};
+
+    const linkMatch = block.match(/^Link:\s*(.+)$/m);
+    const codeMatch = block.match(/^Code:\s*(.+)$/m);
+    const timeMatch = block.match(/^Time \([^)]+\):\s*(.+)$/m);
+
+    if (linkMatch) metadata.link = linkMatch[1].trim();
+    if (codeMatch) metadata.code = codeMatch[1].trim();
+    if (timeMatch) metadata.time = timeMatch[1].trim();
+
+    if (!metadata.link && !metadata.code && !metadata.time) return null;
+    return metadata;
+  }
+
+  function fetchRaw(path) {
+    if (contentCache[path] !== undefined) return Promise.resolve(contentCache[path]);
+    const url = RAW_BASE + path.split('/').map(encodeURIComponent).join('/');
+    return fetch(url)
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      })
+      .then(function (text) {
+        contentCache[path] = text;
+        return text;
+      });
+  }
+
+  function getMetadata(path) {
+    if (parsedFiles.has(path)) {
+      return Promise.resolve(metadataCache[path] || null);
+    }
+    parsedFiles.add(path);
+    return fetchRaw(path)
+      .then(function (content) {
+        const meta = parseHeaderMetadata(content);
+        if (meta) metadataCache[path] = meta;
+        return meta;
+      })
+      .catch(function () { return null; });
+  }
+
+  function getAllCppFiles() {
+    const files = [];
+    if (!structure) return files;
+    ojList.forEach(function (oj) {
+      (structure[oj.path] || []).forEach(function (f) {
+        if (f.ext === 'cpp' || f.ext === 'cc' || f.ext === 'cxx' || f.ext === 'c') {
+          files.push(f.path);
+        }
+      });
+    });
+    (structure['misc'] || []).forEach(function (f) {
+      if (f.ext === 'cpp' || f.ext === 'cc' || f.ext === 'cxx' || f.ext === 'c') {
+        files.push(f.path);
+      }
+    });
+    return files;
+  }
+
+  async function fetchWithConcurrency(items, worker, concurrency, onProgress) {
+    const results = new Array(items.length);
+    let index = 0;
+    let done = 0;
+
+    async function run() {
+      while (index < items.length) {
+        const i = index++;
+        try {
+          results[i] = await worker(items[i], i);
+        } catch (e) {
+          results[i] = null;
+        }
+        done++;
+        if (onProgress) onProgress(done, items.length);
+      }
+    }
+
+    const workers = [];
+    const n = Math.min(concurrency, items.length);
+    for (let i = 0; i < n; i++) workers.push(run());
+    await Promise.all(workers);
+    return results;
+  }
+
+  function computeMonthlyFromMetadata() {
+    const counts = {};
+    for (const path in metadataCache) {
+      const meta = metadataCache[path];
+      if (!meta.time) continue;
+      const m = meta.time.match(/^(\d{4})-(\d{2})/);
+      if (!m) continue;
+      const key = m[1] + '-' + m[2];
+      counts[key] = (counts[key] || 0) + 1;
+    }
+    return counts;
+  }
+
+  function computeDailyFromMetadata() {
+    const daily = {};
+    for (const path in metadataCache) {
+      const meta = metadataCache[path];
+      if (!meta.time) continue;
+      const m = meta.time.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!m) continue;
+      const key = m[1] + '-' + m[2] + '-' + m[3];
+
+      let ojPath = null;
+      for (let i = 0; i < ojList.length; i++) {
+        if (path.indexOf(ojList[i].path + '/') === 0) {
+          ojPath = ojList[i].path;
+          break;
+        }
+      }
+      if (!ojPath && path.indexOf('misc/') === 0) ojPath = 'misc';
+      if (!ojPath) continue;
+
+      if (!daily[key]) daily[key] = { byOj: {}, total: 0 };
+      daily[key].byOj[ojPath] = (daily[key].byOj[ojPath] || 0) + 1;
+      daily[key].total++;
+    }
+    return daily;
+  }
+
+  function computeLangStats() {
+    const counts = {};
+    LANGS.forEach(function (l) { counts[l.name] = 0; });
+    let total = 0;
+
+    function tally(files) {
+      files.forEach(function (f) {
+        for (let i = 0; i < LANGS.length; i++) {
+          if (LANGS[i].exts.indexOf(f.ext) !== -1) {
+            counts[LANGS[i].name]++;
+            total++;
+            return;
+          }
+        }
+      });
+    }
+
+    ojList.forEach(function (oj) { tally(structure[oj.path] || []); });
+    tally(structure['misc'] || []);
+
+    return LANGS.map(function (l) {
+      return {
+        name: l.name,
+        color: l.color,
+        count: counts[l.name],
+        percent: total > 0 ? (counts[l.name] / total) * 100 : 0
+      };
+    }).filter(function (l) { return l.count > 0; });
+  }
+
+  function highlight(line) {
+    let s = escapeHtml(line);
+
+    if (/^\s*\*{5,}/.test(s) || /^\s*Link:/.test(s) || /^\s*Code:/.test(s) || /^\s*Time \(/.test(s)) {
+      return '<span class="tok-meta">' + s + '</span>';
+    }
+
+    if (/^\s*#/.test(s)) {
+      return '<span class="tok-pre">' + s + '</span>';
+    }
+
+    s = s.replace(/("(?:[^"\\]|\\.)*")/g, function (m) { return '\x00S' + m + '\x00'; });
+
+    s = s.replace(/\b(int|long|short|char|float|double|bool|void|auto|const|static|struct|class|public|private|protected|return|if|else|for|while|do|break|continue|switch|case|default|sizeof|new|delete|using|namespace|template|typename|typedef|true|false|nullptr|constexpr|inline|virtual|operator|this|enum|union|goto|try|catch|throw|extern|mutable|register|volatile|signed|unsigned|friend|explicit)\b/g,
+      '<span class="tok-keyword">$1</span>');
+
+    s = s.replace(/\b(vector|string|map|set|unordered_map|unordered_set|pair|queue|deque|stack|priority_queue|array|bitset|tuple|list|multiset|multimap|size_t|int64_t|uint64_t|ll|ull|pii|pll|vi|vll|vs)\b/g,
+      '<span class="tok-type">$1</span>');
+
+    s = s.replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="tok-number">$1</span>');
+
+    s = s.replace(/\x00S([^\x00]*)\x00/g, function (_, str) {
+      return '<span class="tok-string">' + str + '</span>';
+    });
+
+    return s;
+  }
+
+  function renderOverview() {
+    overviewEl.innerHTML = '';
+
+    const folderSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>';
+    const arrowSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+
+    TOP_FOLDERS.forEach(function (folderName) {
+      const count = countFiles(folderName);
+      const a = document.createElement('a');
+      a.className = 'overview-card';
+      a.innerHTML =
+        '<div class="overview-icon">' + folderSvg + '</div>' +
+        '<div class="overview-body"><div class="overview-name"></div></div>' +
+        '<div class="overview-meta">' + formatNumber(count) + ' bài</div>' +
+        '<div class="overview-arrow">' + arrowSvg + '</div>';
+      a.querySelector('.overview-name').textContent = folderName + '/';
+      a.addEventListener('click', function () {
+        if (folderName === 'oj') {
+          ojSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          openFolder(folderName);
+        }
+      });
+      overviewEl.appendChild(a);
+    });
+  }
+
+  function renderOjGrid() {
+    ojGrid.innerHTML = '';
+    const total = totalOjCount();
+    ojSummary.textContent = ojList.length + ' nền tảng · ' + formatNumber(total) + ' bài';
+
+    ojList.forEach(function (oj) {
+      const count = countFiles(oj.path);
+      const card = document.createElement('a');
+      card.className = 'card';
+
+      let metaHtml = '<span class="card-count"><strong>' + count + '</strong> bài</span>';
+      if (oj.badge) {
+        metaHtml += '<span class="tag ' + oj.badge.kind + '">' + oj.badge.label + '</span>';
+      }
+
+      card.innerHTML = '<div class="card-name"></div><div class="card-meta">' + metaHtml + '</div>';
+      card.querySelector('.card-name').textContent = oj.name;
+
+      card.addEventListener('click', function () { openFolder(oj.path); });
+      ojGrid.appendChild(card);
+    });
+  }
+
+  function renderSkeleton() {
+    ojGrid.innerHTML = '';
+    ojSummary.textContent = 'Đang tải…';
+    for (let i = 0; i < 6; i++) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = '<div class="skeleton" style="height:18px;width:60%;margin-bottom:12px"></div><div class="skeleton" style="height:14px;width:40%"></div>';
+      ojGrid.appendChild(card);
+    }
+  }
+
+  function setProgress(pct) {
+    const offset = PROGRESS_CIRCUMFERENCE * (1 - pct / 100);
+    progressFg.style.strokeDashoffset = offset;
+    progressPct.textContent = Math.round(pct) + '%';
+  }
+
+  async function loadStats() {
+    if (statsLoadedFlag || statsLoadingFlag) return;
+    statsLoadingFlag = true;
+
+    statsError.hidden = true;
+    statsLoaded.hidden = true;
+    statsLoading.hidden = false;
+    setProgress(0);
+    progressStep.textContent = 'Khởi tạo…';
+
+    try {
+      await sleep(80);
+      setProgress(5);
+      progressStep.textContent = 'Đang tải cấu trúc repo…';
+      await fetchTree();
+
+      const cachedMeta = readCache(CACHE_KEY_META, CACHE_KEY_META_TS, META_TTL);
+      if (cachedMeta) {
+        progressStep.textContent = 'Đang dùng dữ liệu đã lưu…';
+        setProgress(60);
+        for (const p in cachedMeta) {
+          metadataCache[p] = cachedMeta[p];
+          parsedFiles.add(p);
+        }
+        await sleep(200);
+        setProgress(88);
+      } else {
+        const files = getAllCppFiles();
+        progressStep.textContent = 'Đang đọc metadata từ ' + files.length + ' file…';
+        setProgress(10);
+
+        await fetchWithConcurrency(files, function (path) {
+          return getMetadata(path);
+        }, FETCH_CONCURRENCY, function (done, total) {
+          const pct = 10 + (done / total) * 80;
+          setProgress(pct);
+          if (done % 5 === 0 || done === total) {
+            progressStep.textContent = 'Đang đọc metadata… ' + done + ' / ' + total;
+          }
+        });
+
+        writeCache(CACHE_KEY_META, CACHE_KEY_META_TS, metadataCache);
+        setProgress(90);
+      }
+
+      progressStep.textContent = 'Đang vẽ biểu đồ…';
+      await sleep(120);
+
+      renderChart();
+      renderOjComparison();
+      renderActivityChart();
+      renderDailyHeatmap();
+
+      setProgress(100);
+      progressStep.textContent = 'Hoàn tất';
+      await sleep(240);
+
+      statsLoading.hidden = true;
+      statsLoaded.hidden = false;
+      updateStatsSummary();
+
+      statsLoadedFlag = true;
+      statsLoadingFlag = false;
+    } catch (err) {
+      statsLoading.hidden = true;
+      statsError.hidden = false;
+      statsErrorMsg.textContent = err.message || 'Lỗi không xác định';
+      statsLoadingFlag = false;
+    }
+  }
+
+  function updateStatsSummary() {
+    const months = computeMonthlyFromMetadata();
+    let total = 0;
+    Object.keys(months).forEach(function (k) { total += months[k]; });
+    statsSummary.textContent = formatNumber(total) + ' bài · ' + Object.keys(months).length + ' tháng';
+  }
+
+  function renderChart() {
+    const stats = computeLangStats();
+    const r = 40;
+    const c = 2 * Math.PI * r;
+    let cumulative = 0;
+
+    while (donutEl.firstChild) donutEl.removeChild(donutEl.firstChild);
+
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    bg.setAttribute('cx', '50');
+    bg.setAttribute('cy', '50');
+    bg.setAttribute('r', r);
+    bg.setAttribute('fill', 'none');
+    bg.setAttribute('stroke', '#e6e8eb');
+    bg.setAttribute('stroke-width', '12');
+    donutEl.appendChild(bg);
+
+    stats.forEach(function (lang) {
+      if (lang.percent === 0) return;
+      const dash = (lang.percent / 100) * c;
+      const seg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      seg.setAttribute('cx', '50');
+      seg.setAttribute('cy', '50');
+      seg.setAttribute('r', r);
+      seg.setAttribute('fill', 'none');
+      seg.setAttribute('stroke', lang.color);
+      seg.setAttribute('stroke-width', '12');
+      seg.setAttribute('stroke-dasharray', dash + ' ' + (c - dash));
+      seg.setAttribute('stroke-dashoffset', -cumulative);
+      donutEl.appendChild(seg);
+      cumulative += dash;
+    });
+
+    if (stats.length) {
+      donutLabel.textContent = stats[0].name;
+      donutValueEl.textContent = stats[0].percent.toFixed(1) + '%';
+    }
+    langCount.textContent = stats.length + ' ngôn ngữ';
+
+    legendEl.innerHTML = '';
+    stats.forEach(function (lang) {
+      const row = document.createElement('div');
+      row.className = 'legend-row';
+      row.innerHTML =
+        '<span class="legend-dot" style="background:' + lang.color + '"></span>' +
+        '<span class="legend-name"></span>' +
+        '<span class="legend-stats"><strong>' + lang.percent.toFixed(1) + '%</strong></span>' +
+        '<div class="legend-bar"><span style="width:' + Math.max(lang.percent, 1) + '%;background:' + lang.color + '"></span></div>';
+      row.querySelector('.legend-name').textContent = lang.name + ' (' + formatNumber(lang.count) + ')';
+      legendEl.appendChild(row);
+    });
+  }
+
+  function renderActivityChart() {
+    const counts = computeMonthlyFromMetadata();
+    const keys = Object.keys(counts).sort();
+
+    barChart.innerHTML = '';
+
+    if (!keys.length) {
+      const empty = document.createElement('div');
+      empty.className = 'bar-empty';
+      empty.textContent = 'Chưa có dữ liệu hoạt động.';
+      barChart.appendChild(empty);
+      activitySum.textContent = '';
+      return;
+    }
+
+    const total = keys.reduce(function (s, k) { return s + counts[k]; }, 0);
+    const maxCount = Math.max.apply(null, keys.map(function (k) { return counts[k]; }));
+
+    activitySum.textContent = keys.length + ' tháng · ' + formatNumber(total) + ' bài';
+
+    keys.forEach(function (key) {
+      const parts = key.split('-');
+      const year = parts[0];
+      const monthIdx = parseInt(parts[1], 10) - 1;
+      const count = counts[key];
+
+      const col = document.createElement('div');
+      col.className = 'bar-col';
+      col.title = MONTH_LABELS[monthIdx] + ' ' + year + ': ' + count + ' bài';
+
+      const valEl = document.createElement('div');
+      valEl.className = 'bar-value';
+      valEl.textContent = count;
+
+      const track = document.createElement('div');
+      track.className = 'bar-track';
+
+      const rect = document.createElement('div');
+      rect.className = 'bar-rect';
+      rect.style.height = (count / maxCount) * 100 + '%';
+
+      track.appendChild(rect);
+
+      const label = document.createElement('div');
+      label.className = 'bar-label';
+      label.textContent = MONTH_LABELS[monthIdx];
+
+      col.appendChild(valEl);
+      col.appendChild(track);
+      col.appendChild(label);
+      barChart.appendChild(col);
+    });
+  }
+
+  function renderOjComparison() {
+    const rows = ojList.map(function (oj) {
+      return { name: oj.name, path: oj.path, count: countFiles(oj.path) };
+    }).sort(function (a, b) { return b.count - a.count; });
+
+    if (!rows.length) return;
+
+    const max = Math.max.apply(null, rows.map(function (r) { return r.count; }).concat([1]));
+    const total = rows.reduce(function (s, r) { return s + r.count; }, 0);
+
+    hbarSummary.textContent = rows.length + ' nền tảng · ' + formatNumber(total) + ' bài';
+    hbarChart.innerHTML = '';
+
+    rows.forEach(function (row) {
+      const el = document.createElement('div');
+      el.className = 'hbar-row';
+
+      const label = document.createElement('div');
+      label.className = 'hbar-label';
+      label.textContent = row.name;
+      label.title = row.name;
+
+      const track = document.createElement('div');
+      track.className = 'hbar-track';
+
+      const fill = document.createElement('div');
+      fill.className = 'hbar-fill';
+      track.appendChild(fill);
+
+      const value = document.createElement('div');
+      value.className = 'hbar-value';
+      value.textContent = row.count;
+
+      el.appendChild(label);
+      el.appendChild(track);
+      el.appendChild(value);
+      hbarChart.appendChild(el);
+
+      const pct = (row.count / max) * 100;
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          fill.style.width = pct + '%';
+        });
+      });
+    });
+  }
+
+  function renderDailyHeatmap() {
+    heatmapGrid.innerHTML = '';
+    heatmapMonthRow.innerHTML = '';
+
+    const daily = computeDailyFromMetadata();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const start = new Date(today);
+    start.setDate(start.getDate() - HEATMAP_DAYS + 1);
+
+    const padStart = start.getDay();
+    const totalCells = padStart + HEATMAP_DAYS;
+    const weeks = Math.ceil(totalCells / 7);
+    const todayKey = toDateKey(today);
+
+    const cells = [];
+
+    for (let i = 0; i < weeks * 7; i++) {
+      if (i < padStart || i >= padStart + HEATMAP_DAYS) {
+        cells.push(null);
+        continue;
+      }
+      const date = new Date(start);
+      date.setDate(date.getDate() + (i - padStart));
+      const key = toDateKey(date);
+      const entry = daily[key];
+      cells.push({
+        date: date,
+        key: key,
+        count: entry ? entry.total : 0,
+        byOj: entry ? entry.byOj : {}
+      });
+    }
+
+    let maxDaily = 1;
+    let totalAll = 0;
+    cells.forEach(function (c) {
+      if (!c) return;
+      if (c.count > maxDaily) maxDaily = c.count;
+      totalAll += c.count;
+    });
+
+    heatmapSummary.textContent = formatNumber(totalAll) + ' bài · 365 ngày';
+
+    function heatmapColor(count, max) {
+      if (count === 0) return '#ebedf0';
+      if (max <= 1) return '#0969da';
+      const ratio = count / max;
+      if (ratio <= 0.2) return '#b6e3ff';
+      if (ratio <= 0.4) return '#54aeff';
+      if (ratio <= 0.7) return '#0969da';
+      return '#0a3069';
+    }
+
+    cells.forEach(function (cell) {
+      const el = document.createElement('div');
+      el.className = 'heatmap-cell';
+
+      if (!cell) {
+        el.classList.add('empty');
+        heatmapGrid.appendChild(el);
+        return;
+      }
+
+      el.style.background = heatmapColor(cell.count, maxDaily);
+
+      if (cell.count === 0) {
+        el.title = formatDayLong(cell.date) + ': không có bài';
+      } else {
+        el.title = formatDayLong(cell.date) + ': ' + cell.count + ' bài';
+      }
+
+      if (cell.key === todayKey) el.classList.add('today');
+
+      el.dataset.key = cell.key;
+      el.addEventListener('click', function () { selectDay(cell, el); });
+
+      heatmapGrid.appendChild(el);
+    });
+
+    let lastMonth = -1;
+    for (let w = 0; w < weeks; w++) {
+      let firstDate = null;
+      for (let d = 0; d < 7; d++) {
+        const cell = cells[w * 7 + d];
+        if (cell) { firstDate = cell.date; break; }
+      }
+      if (!firstDate) continue;
+      const m = firstDate.getMonth();
+      if (m !== lastMonth) {
+        lastMonth = m;
+        const label = document.createElement('div');
+        label.className = 'heatmap-month-label';
+        label.style.left = (w * HEATMAP_WEEK_WIDTH) + 'px';
+        label.textContent = MONTH_LABELS[m];
+        heatmapMonthRow.appendChild(label);
+      }
+    }
+  }
+
+  function formatDayLong(date) {
+    const d = String(date.getDate()).padStart(2, '0');
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const y = date.getFullYear();
+    const wd = WEEKDAY_LABELS[date.getDay()];
+    return wd + ', ' + d + '/' + m + '/' + y;
+  }
+
+  function selectDay(cell, el) {
+    if (selectedDayKey === cell.key) {
+      selectedDayKey = null;
+      dayDetail.hidden = true;
+      document.querySelectorAll('.heatmap-cell.selected').forEach(function (c) {
+        c.classList.remove('selected');
+      });
+      return;
+    }
+
+    selectedDayKey = cell.key;
+    document.querySelectorAll('.heatmap-cell.selected').forEach(function (c) {
+      c.classList.remove('selected');
+    });
+    el.classList.add('selected');
+
+    renderDayDetail(cell);
+  }
+
+  function ojDisplayName(path) {
+    if (path === 'misc') return 'misc';
+    const oj = ojList.find(function (o) { return o.path === path; });
+    return oj ? oj.name : path;
+  }
+
+  function renderDayDetail(cell) {
+    dayDetail.hidden = false;
+    dayDetail.innerHTML = '';
+
+    const head = document.createElement('div');
+    head.className = 'day-detail-head';
+
+    const meta = document.createElement('div');
+    meta.className = 'day-detail-meta';
+
+    const dateItem = document.createElement('div');
+    dateItem.className = 'day-detail-item';
+    dateItem.innerHTML =
+      '<div class="day-detail-label">Ngày</div>' +
+      '<div class="day-detail-value"></div>';
+    dateItem.querySelector('.day-detail-value').textContent = formatDayLong(cell.date);
+
+    const totalItem = document.createElement('div');
+    totalItem.className = 'day-detail-item day-detail-total';
+    totalItem.innerHTML =
+      '<div class="day-detail-label">Tổng</div>' +
+      '<div class="day-detail-value">' + cell.count + ' bài</div>';
+
+    meta.appendChild(dateItem);
+    meta.appendChild(totalItem);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'day-detail-close';
+    closeBtn.type = 'button';
+    closeBtn.setAttribute('aria-label', 'Đóng');
+    closeBtn.textContent = '×';
+    closeBtn.addEventListener('click', function () {
+      selectedDayKey = null;
+      dayDetail.hidden = true;
+      document.querySelectorAll('.heatmap-cell.selected').forEach(function (c) {
+        c.classList.remove('selected');
+      });
+    });
+
+    head.appendChild(meta);
+    head.appendChild(closeBtn);
+    dayDetail.appendChild(head);
+
+    const list = document.createElement('div');
+    list.className = 'day-detail-list';
+
+    const byOj = cell.byOj || {};
+    const entries = Object.keys(byOj).map(function (k) {
+      return { path: k, count: byOj[k] };
+    }).sort(function (a, b) { return b.count - a.count; });
+
+    if (!entries.length) {
+      const empty = document.createElement('div');
+      empty.className = 'day-empty';
+      empty.textContent = 'Không có bài nào trong ngày này.';
+      list.appendChild(empty);
+    } else {
+      const max = entries[0].count;
+      entries.forEach(function (entry) {
+        const row = document.createElement('div');
+        row.className = 'day-row';
+
+        const name = document.createElement('div');
+        name.className = 'day-row-name';
+        name.textContent = ojDisplayName(entry.path);
+        name.title = entry.path;
+
+        const track = document.createElement('div');
+        track.className = 'day-row-track';
+
+        const fill = document.createElement('div');
+        fill.className = 'day-row-fill';
+        track.appendChild(fill);
+
+        const count = document.createElement('div');
+        count.className = 'day-row-count';
+        count.textContent = entry.count;
+
+        row.appendChild(name);
+        row.appendChild(track);
+        row.appendChild(count);
+        list.appendChild(row);
+
+        const pct = (entry.count / max) * 100;
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            fill.style.width = pct + '%';
+          });
+        });
+      });
+    }
+
+    dayDetail.appendChild(list);
+  }
+
+  function buildBreadcrumb(container, path) {
+    container.innerHTML = '';
+
+    const homeLink = document.createElement('a');
+    homeLink.href = '#';
+    homeLink.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>home</span>';
+    homeLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      showView('home');
+    });
+    container.appendChild(homeLink);
+
+    const parts = path.split('/').filter(Boolean);
+    let acc = '';
+    parts.forEach(function (part, i) {
+      const sep = document.createElement('span');
+      sep.className = 'sep';
+      sep.textContent = '/';
+      container.appendChild(sep);
+
+      acc += (acc ? '/' : '') + part;
+      const isLast = i === parts.length - 1;
+
+      if (isLast) {
+        const cur = document.createElement('span');
+        cur.className = 'current';
+        cur.textContent = part;
+        container.appendChild(cur);
+      } else {
+        const link = document.createElement('a');
+        link.href = '#';
+        link.textContent = part;
+        const targetPath = acc;
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (part === 'oj') {
+            showView('home');
+            setTimeout(function () {
+              ojSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 60);
+          } else {
+            openFolder(targetPath);
+          }
+        });
+        container.appendChild(link);
+      }
+    });
+  }
+
+  function openFolder(path) {
+    if (!structureReady) {
+      showToast('Đang tải cấu trúc…');
+      fetchTree().then(function () { openFolder(path); });
+      return;
+    }
+
+    currentPath = path;
+    buildBreadcrumb(folderBreadcrumb, path);
+    const name = path.split('/').filter(Boolean).pop();
+    folderTitle.textContent = name + '/';
+
+    const files = structure[path] || [];
+    folderCount.textContent = files.length + ' bài';
+    fileList.innerHTML = '';
+
+    if (!files.length) {
+      const empty = document.createElement('div');
+      empty.style.padding = '40px 20px';
+      empty.style.textAlign = 'center';
+      empty.style.color = 'var(--soft)';
+      empty.textContent = 'Thư mục trống.';
+      fileList.appendChild(empty);
+      showView('folder');
+      return;
+    }
+
+    const FILE_SVG = '<svg class="file-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Z"/></svg>';
+
+    files.slice().sort(function (a, b) { return a.name.localeCompare(b.name); }).forEach(function (file) {
+      const row = document.createElement('a');
+      row.className = 'file-row';
+      row.href = '#';
+      row.innerHTML = FILE_SVG + '<span class="file-name"></span><span class="file-size">' + formatSize(file.size) + '</span>';
+      row.querySelector('.file-name').textContent = file.name;
+
+      row.addEventListener('click', function (e) {
+        e.preventDefault();
+        openFile(file.path, file.size);
+      });
+
+      fileList.appendChild(row);
+    });
+
+    showView('folder');
+  }
+
+  function renderFileMetadata(path) {
+    const meta = metadataCache[path];
+
+    if (!meta) {
+      fileMetadata.hidden = true;
+      fileMetadata.innerHTML = '';
+      return;
+    }
+
+    fileMetadata.hidden = false;
+    fileMetadata.innerHTML = '';
+
+    if (meta.code) {
+      const codeEl = document.createElement('span');
+      codeEl.className = 'metadata-item';
+      codeEl.innerHTML = '<span class="metadata-code"></span>';
+      codeEl.querySelector('.metadata-code').textContent = meta.code;
+      fileMetadata.appendChild(codeEl);
+    }
+
+    if (meta.link) {
+      const linkEl = document.createElement('span');
+      linkEl.className = 'metadata-item';
+      linkEl.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><a class="metadata-link" target="_blank" rel="noopener"></a>';
+      const a = linkEl.querySelector('.metadata-link');
+      a.href = meta.link;
+      a.textContent = meta.link;
+      fileMetadata.appendChild(linkEl);
+    }
+
+    if (meta.time) {
+      const timeEl = document.createElement('span');
+      timeEl.className = 'metadata-item time';
+      timeEl.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><span class="metadata-time"></span>';
+      timeEl.querySelector('.metadata-time').textContent = meta.time;
+      fileMetadata.appendChild(timeEl);
+    }
+  }
+
+  function renderCode(content) {
+    const lines = content.split('\n');
+    codeContent.innerHTML = '';
+
+    const frag = document.createDocumentFragment();
+    lines.forEach(function (line, i) {
+      const lineEl = document.createElement('div');
+      lineEl.className = 'code-line';
+
+      const numEl = document.createElement('span');
+      numEl.className = 'code-num';
+      numEl.textContent = i + 1;
+
+      const textEl = document.createElement('span');
+      textEl.className = 'code-text';
+      textEl.innerHTML = highlight(line) || '&nbsp;';
+
+      lineEl.appendChild(numEl);
+      lineEl.appendChild(textEl);
+      frag.appendChild(lineEl);
+    });
+    codeContent.appendChild(frag);
+  }
+
+  function openFile(path, size) {
+    currentPath = path;
+    buildBreadcrumb(fileBreadcrumb, path);
+
+    const name = path.split('/').filter(Boolean).pop();
+    fileTitle.textContent = name;
+    fileSizeMeta.textContent = size ? formatSize(size) : '';
+
+    renderFileMetadata(path);
+
+    btnGithub.href = BLOB_BASE + path.split('/').map(encodeURIComponent).join('/');
+    btnCopy.classList.remove('copied');
+    btnCopyLabel.textContent = 'Copy';
+
+    if (contentCache[path] !== undefined) {
+      currentCode = contentCache[path];
+      renderCode(currentCode);
+      btnCopy.disabled = false;
+    } else {
+      currentCode = '';
+      btnCopy.disabled = true;
+      codeContent.innerHTML = '<div class="code-loading"><div class="spinner"></div><div>Đang tải nội dung…</div></div>';
+
+      fetchRaw(path)
+        .then(function (content) {
+          if (currentPath !== path) return;
+          currentCode = content;
+          renderCode(content);
+          btnCopy.disabled = false;
+
+          if (!metadataCache[path]) {
+            const meta = parseHeaderMetadata(content);
+            if (meta) {
+              metadataCache[path] = meta;
+              parsedFiles.add(path);
+              renderFileMetadata(path);
+            }
+          }
+        })
+        .catch(function (err) {
+          if (currentPath !== path) return;
+          codeContent.innerHTML = '<div class="code-loading" style="color:var(--danger)"><div>Không tải được file</div><div style="font-size:0.8rem">' + escapeHtml(err.message) + '</div></div>';
+        });
+    }
+
+    showView('file');
+  }
+
+  function goBack() {
+    if (!currentPath) {
+      showView('home');
+      return;
+    }
+    const parts = currentPath.split('/').filter(Boolean);
+    if (parts.length <= 1) {
+      showView('home');
+      return;
+    }
+    parts.pop();
+    const parent = parts.join('/');
+    if (parent === 'oj') {
+      showView('home');
+      setTimeout(function () {
+        ojSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    } else {
+      openFolder(parent);
+    }
+  }
+
+  folderBack.addEventListener('click', goBack);
+  fileBack.addEventListener('click', goBack);
+
+  btnCopy.addEventListener('click', function () {
+    if (!currentCode) return;
+
+    const done = function () {
+      btnCopy.classList.add('copied');
+      btnCopyLabel.textContent = 'Đã copy';
+      showToast('Đã copy vào clipboard');
+      setTimeout(function () {
+        btnCopy.classList.remove('copied');
+        btnCopyLabel.textContent = 'Copy';
+      }, 1800);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(currentCode).then(done).catch(function () {
+        fallbackCopy(currentCode);
+        done();
+      });
+    } else {
+      fallbackCopy(currentCode);
+      done();
+    }
+  });
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  window.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!dayDetail.hidden) {
+      selectedDayKey = null;
+      dayDetail.hidden = true;
+      document.querySelectorAll('.heatmap-cell.selected').forEach(function (c) {
+        c.classList.remove('selected');
+      });
+      return;
+    }
+    if (views.file.classList.contains('active') || views.folder.classList.contains('active')) {
+      goBack();
+    }
+  });
+
+  statsHead.addEventListener('click', function () {
+    const wasCollapsed = statsSection.classList.contains('collapsed');
+    statsSection.classList.toggle('collapsed');
+
+    if (wasCollapsed && !statsLoadedFlag && !statsLoadingFlag) {
+      loadStats();
+    }
+  });
+
+  retryBtn.addEventListener('click', function () {
+    statsError.hidden = true;
+    statsLoadingFlag = false;
+    loadStats();
+  });
+
+  document.querySelectorAll('[data-sub-toggle]').forEach(function (head) {
+    head.addEventListener('click', function () {
+      const target = head.getAttribute('data-sub-toggle');
+      const el = document.getElementById(target);
+      if (el) el.classList.toggle('collapsed');
+    });
+  });
+
+  const repoLink = 'https://github.com/' + REPO.owner + '/' + REPO.name;
+  $('repo-link').href = repoLink;
+  $('footer-link').href = repoLink;
+  $('repo-link').textContent = REPO.owner + ' / ' + REPO.name;
+
+  renderSkeleton();
+
+  fetchTree()
+    .then(function () {
+      renderOverview();
+      renderOjGrid();
+    })
+    .catch(function (err) {
+      ojSummary.textContent = 'Lỗi tải dữ liệu';
+      ojGrid.innerHTML = '<div class="bar-empty" style="grid-column:1/-1">Không tải được cấu trúc repo.<br><span style="font-size:0.8rem">' + escapeHtml(err.message) + '</span></div>';
+      overviewEl.innerHTML = '';
+    });
+
+})();
+</script>
+</body>
+</html>
