@@ -99,7 +99,7 @@ struct Box{
         }
 
         res.v[H - 2] = "|" + string(W - 2, ' ') + "|";
-        res.v[H - 1] = "+" + string(W - 3, '-') + ">+";
+        res.v[H - 1] = "+<" + string(W - 3, '-') + "+";
 
         return res;
     }
@@ -132,7 +132,7 @@ signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
 
     cin >> str;
-    str += '|';
+    str = "(" + str + ")";
     int sz = str.size();
 
     vector<Box> sta;
@@ -157,12 +157,7 @@ signed main(){
             }
 
             if(str[i] == '|'){
-                Box cur;
-                for(const Box &b: sta){
-                    cur = cur + b;
-                }
-                sta.clear();
-                parts.push_back(cur);
+                sta.push_back(Box("-|"));
             }
             else if(str[i] == '('){
                 sta.push_back(Box("-("));
@@ -175,12 +170,18 @@ signed main(){
                 }
 
                 Box cur;
+                vector<Box> mpart;
                 while(!order.empty()){
-                    cur = cur + order.back();
+                    if(order.back().special('|')){
+                        mpart.push_back(cur);
+                        cur = Box();
+                    }
+                    else cur = cur + order.back();
                     order.pop_back();
                 }
+                if(cur.width() > 0) mpart.push_back(cur);
 
-
+                cur = OR(mpart);
 
                 sta.pop_back();
                 sta.push_back(cur);
@@ -193,7 +194,12 @@ signed main(){
         }
     }
 
-    Box res = Box("-S") + OR(parts) + Box("-T");
+    Box cur;
+    for(const Box &b: sta)
+        cur = cur + b;
+    if(cur.width() > 0) parts.push_back(cur);
+
+    Box res = Box("-S") + OR(parts) + Box("-F");
 
     cout << res.height() << " " << res.width() << "\n";
     cout << res << "\n";
