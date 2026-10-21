@@ -113,17 +113,51 @@ signed main() {
 }
 #endif
 
-void Init(int N, int A[]) {
-    vector<vector<int>> preL(N, vector<int>(N));
-    vector<vector<int>> preR(N, vector<int>(N));
-    for(int i = 0; i < N; ++i){
-        preL[i][i] = preR[i][i] = A[i];
-        for(int j = i + 1; j < N; ++j)
-            preL[i][j] =
+const int MAXN = 1000, MAXLG = __lg(MAXN) + 1;
+int a[MAXN + 5], n;
+int table[MAXN + 5][MAXLG + 5];
+void compute(int lg, int L, int R){
+    if(L > R) return;
+    else if(L == R){
+        table[L][lg] = a[L];
+        return;
     }
+
+    int mid = (L + R) >> 1;
+    table[mid][lg] = a[mid];
+    for(int i = mid - 1; i >= L; --i){
+        table[i][lg] = Secret(a[i], table[i + 1][lg]);
+    }
+
+    table[mid + 1][lg] = a[mid + 1];
+    for(int i = mid + 2; i <= R; ++i){
+        table[i][lg] = Secret(table[i - 1][lg], a[i]);
+    }
+
+    compute(lg + 1, L, mid);
+    compute(lg + 1, mid + 1, R);
+}
+
+void Init(int N, int A[]) {
+    n = N;
+    for(int i = 0; i < n; ++i)
+        a[i] = A[i];
+    compute(0, 0, n - 1);
+}
+
+int get(int lg, int l, int r, int u, int v){
+    if(l == r) return a[l];
+
+    int mid = (l + r) >> 1;
+    if(u <= mid && mid < v)
+        return Secret(table[u][lg], table[v][lg]);
+
+    if(v <= mid)
+        return get(lg + 1, l, mid, u, v);
+    else return get(lg + 1, mid + 1, r, u, v);
 }
 
 int Query(int L, int R) {
-  return 0;
+  return get(0, 0, n - 1, L, R);
 }
 
