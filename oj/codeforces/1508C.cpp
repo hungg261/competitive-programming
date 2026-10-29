@@ -55,7 +55,7 @@ struct DSU{
 };
 
 const int MAXN = 2e5;
-int n, m;
+int n, m, target_xor = 0;
 vector<pair<int, int>> adj[MAXN + 5];
 set<int> is_edge[MAXN + 5];
 
@@ -66,12 +66,25 @@ struct Edge{
     }
 }; vector<Edge> edges;
 
+int kruskal(vector<Edge> edge_list){
+    sort(begin(edge_list), end(edge_list));
+    DSU dsu(n);
+    int mst = 0;
+    for(const Edge &e: edge_list){
+        if(dsu.unite(e.u, e.v)){
+            mst += e.w;
+        }
+    }
+    return mst;
+}
+
+namespace Brute{ void solve(); }
+
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
 
     cin >> n >> m;
 
-    int target_xor = 0;
     for(int i = 1; i <= m; ++i){
         int a, b, c;
         cin >> a >> b >> c;
@@ -87,9 +100,6 @@ signed main(){
         edges.push_back({a, b, c});
     }
 
-    for(int u = 1; u <= n; ++u)
-        sort(begin(adj[u]), end(adj[u]));
-
     set<int> unvis;
     for(int u = 1; u <= n; ++u) unvis.insert(u);
 
@@ -98,6 +108,7 @@ signed main(){
 
     vector<int> cc_id(n + 1);
     int cc_cnt = 0;
+    DSU dsu_zero(n), dsu_real(n);
 
     for(int i = 1; i <= n; ++i){
         if(!unvis.count(i)) continue;
@@ -120,6 +131,7 @@ signed main(){
                 if(is_edge[u].count(v)) continue;
                 que.push(v);
                 erased.push_back(v);
+                dsu_zero.unite(u, v);
             }
 
             for(int v: erased) unvis.erase(v);
@@ -146,19 +158,18 @@ signed main(){
     }
 
     sort(begin(edges), end(edges));
-    DSU dsu(n);
 
     int mst = 0;
     for(const Edge &e: edges){
-        if(cc_id[e.u] == cc_id[e.v]){
-            if(!if_cycle && !dsu.same(cc_id[e.u], cc_id[e.v])){
+        if(dsu_zero.same(e.u, e.v)){
+            if(!if_cycle && !dsu_real.same(e.u, e.v)){
                 target_xor = min(target_xor, e.w);
             }
         }
-        else if(dsu.unite(cc_id[e.u], cc_id[e.v])){
+        else if(dsu_real.unite(e.u, e.v)){
+            dsu_zero.unite(e.u, e.v);
             mst += e.w;
         }
-        else if(!if_cycle) target_xor = min(target_xor, e.w);
     }
 
     if(!if_cycle) mst += target_xor;
@@ -166,4 +177,29 @@ signed main(){
     cout << mst << "\n";
 
     return 0;
+}
+
+namespace Brute{
+
+void solve(){
+    for(int u = 1; u <= n; ++u){
+        for(int v = u + 1; v <= n; ++v){
+            if(!is_edge[u].count(v)){
+                edges.push_back({u, v, 0});
+            }
+        }
+    }
+
+    int res = LLONG_MAX / 2;
+    for(Edge &e: edges){
+        if(e.w != 0) continue;
+        int old = e.w;
+        e.w = target_xor;
+        res = min(res, kruskal(edges));
+        e.w = old;
+    }
+
+    cout << res << "\n";
+}
+
 }
