@@ -1,65 +1,54 @@
 /******************************************************************************
 Link: https://codeforces.com/problemset/problem/1303/D
 Code: 1303D
-Time (YYYY-MM-DD-hh.mm.ss): 2026-06-04-18.57.24
+Time (YYYY-MM-DD-hh.mm.ss): 2026-11-02-16.59.34
 *******************************************************************************/
 #include<bits/stdc++.h>
 using namespace std;
 
-void solve(){
-    long long target; int n;
-    cin >> target >> n;
+#define int long long
+const int MAXLG = 61;
 
-    long long sum = 0;
-    multiset<int> ms;
-    for(int i = 1; i <= n; ++i){
-        int cur; cin >> cur;
-        sum += cur;
-        ms.insert(cur);
+void solve(){
+    int S, n;
+    cin >> S >> n;
+
+    vector<int> a(n);
+    int sum = 0;
+    for(int i = 0; i < n; ++i){
+        cin >> a[i];
+        sum += a[i];
     }
 
-    if(sum < target){
+    if(sum < S){
         cout << "-1\n";
         return;
     }
 
+    vector<int> b(MAXLG + 1, 0);
+    for(int x: a)
+        b[__lg(x)]++;
+
     int res = 0;
-    for(long long b = 1; b <= target; b <<= 1){
-        if((target & b) == b){
-            auto lb = ms.upper_bound(b);
-            long long cursum = 0;
-            for(auto it = ms.begin(); it != lb; ++it){
-                cursum += *it;
-                if(cursum >= b) break;
-            }
-
-            if(cursum < b){
-                auto it = ms.lower_bound(b);
-                int value = *it;
-
-                while(value > b){
-                    ms.insert(value >>= 1);
+    for(int bit = 0; bit <= MAXLG; ++bit){
+        if(S >> bit & 1){
+            if(b[bit] > 0) --b[bit];
+            else{
+                int nxt = bit;
+                for(; nxt <= MAXLG && b[nxt] == 0; ++nxt){
+                    ++b[nxt];
                     ++res;
                 }
-
-                ms.erase(it);
-            }
-            else{
-                for(auto it = prev(lb); ; --it){
-                    target -= *it;
-                }
+                --b[nxt];
             }
         }
+
+        if(bit < MAXLG)
+            b[bit + 1] += b[bit] / 2;
     }
 
     cout << res << "\n";
 }
-
-/*
-1
-183 8
-1 8 32 4 32 1 64 64
-*/
 
 signed main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
