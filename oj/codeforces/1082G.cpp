@@ -133,7 +133,7 @@ signed main(){
         total += w;
 
         int u = n + i;
-        flow.addEdge(S, i, w);
+        flow.addEdge(S, u, w);
         flow.addEdge(u, a, INF);
         flow.addEdge(u, b, INF);
     }
